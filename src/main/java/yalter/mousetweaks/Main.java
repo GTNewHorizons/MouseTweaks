@@ -32,6 +32,7 @@ public class Main extends DeobfuscationLayer {
 	public enum OnTickMethod {PROFILER, FORGE, LITELOADER}
 	public static List<OnTickMethod> onTickMethodOrder = new LinkedList<OnTickMethod>();
 
+	@Deprecated
 	public static int Debug = 0;
 
 	public static Config mainConfig;
@@ -55,7 +56,7 @@ public class Main extends DeobfuscationLayer {
 	}
 
 	public static boolean initialise(Constants.EntryPoint entryPoint) {
-		Logger.Log("A call to initialise, entry point: " + entryPoint.toString() + ".");
+		Constants.LOGGER.info("A call to initialise, entry point: " + entryPoint.toString() + ".");
 
 		if (disabled)
 			return false;
@@ -77,17 +78,17 @@ public class Main extends DeobfuscationLayer {
 
 		minecraftForge = Reflection.doesClassExist("net.minecraftforge.client.MinecraftForgeClient");
 		if (minecraftForge) {
-			Logger.Log("Minecraft Forge is installed.");
+		    Constants.LOGGER.info("Minecraft Forge is installed.");
 		} else {
-			Logger.Log("Minecraft Forge is not installed.");
+            Constants.LOGGER.info("Minecraft Forge is not installed.");
 		}
 
 		liteLoader = ((entryPoint == Constants.EntryPoint.LITELOADER) // If we're initialising from LiteModMouseTweaks, the check is not necessary.
 				|| Reflection.doesClassExist("com.mumfrey.liteloader.core.LiteLoader"));
 		if (liteLoader) {
-			Logger.Log("LiteLoader is installed.");
+            Constants.LOGGER.info("LiteLoader is installed.");
 		} else {
-			Logger.Log("LiteLoader is not installed.");
+            Constants.LOGGER.info("LiteLoader is not installed.");
 		}
 
 		// Find the first suitable OnTick method.
@@ -97,7 +98,7 @@ public class Main extends DeobfuscationLayer {
 				case FORGE:
 					if (minecraftForge) {
 						useForge = true;
-						Logger.Log("Using Forge for the mod operation.");
+						Constants.LOGGER.info("Using Forge for the mod operation.");
 						break methodLoop;
 					}
 					break;
@@ -107,7 +108,7 @@ public class Main extends DeobfuscationLayer {
 						useLiteLoader = ((entryPoint == Constants.EntryPoint.LITELOADER)
 								|| Reflection.registerLiteModListenerInLiteLoader());
 						if (useLiteLoader) {
-							Logger.Log("Using LiteLoader for the mod operation.");
+						    Constants.LOGGER.info("Using LiteLoader for the mod operation.");
 							break methodLoop;
 						}
 					}
@@ -116,7 +117,7 @@ public class Main extends DeobfuscationLayer {
 				case PROFILER:
 					if (Reflection.replaceProfiler()) {
 						useProfiler = true;
-						Logger.Log("Using the Minecraft profiler for the mod operation.");
+						Constants.LOGGER.info("Using the Minecraft profiler for the mod operation.");
 
 						optifine = Reflection.reflectOptifine();
 
@@ -133,7 +134,7 @@ public class Main extends DeobfuscationLayer {
 		}
 
 		ModCompatibility.initialize();
-		Logger.Log("Mouse Tweaks has been initialised.");
+		Constants.LOGGER.info("Mouse Tweaks has been initialised.");
 
 		return true;
 	}
@@ -146,7 +147,7 @@ public class Main extends DeobfuscationLayer {
 		LMBTweakWithoutItem = mainConfig.getOrCreateIntProperty("LMBTweakWithoutItem", 1);
 		WheelTweak = mainConfig.getOrCreateIntProperty("WheelTweak", 1);
 		WheelSearchOrder = mainConfig.getOrCreateIntProperty("WheelSearchOrder", 1);
-		Debug = mainConfig.getOrCreateIntProperty("Debug", 0);
+		// Debug = mainConfig.getOrCreateIntProperty("Debug", 0);
 
 		// Load the OnTick method order.
 		String onTickMethodString = mainConfig.getOrCreateProperty("OnTickMethodOrder",
@@ -176,7 +177,7 @@ public class Main extends DeobfuscationLayer {
 		boolean savedConfig = saveConfigFile();
 
 		if (savedConfig && !loadedConfig)
-			Logger.Log("Mouse Tweaks config file was created.");
+		    Constants.LOGGER.info("Mouse Tweaks config file was created.");
 	}
 
 	public static boolean saveConfigFile() {
@@ -185,7 +186,7 @@ public class Main extends DeobfuscationLayer {
 		mainConfig.setIntProperty("LMBTweakWithoutItem", LMBTweakWithoutItem);
 		mainConfig.setIntProperty("WheelTweak", WheelTweak);
 		mainConfig.setIntProperty("WheelSearchOrder", WheelSearchOrder);
-		mainConfig.setIntProperty("Debug", Debug);
+		// mainConfig.setIntProperty("Debug", Debug);
 
 		String onTickMethodString = "";
 		for (OnTickMethod method : onTickMethodOrder) {
@@ -254,9 +255,7 @@ public class Main extends DeobfuscationLayer {
 			container = getContainerWithID(currentScreen);
 			disableForThisContainer = isDisabledForThisContainer(currentScreen);
 
-			if (Debug == 1) {
-				Logger.Log(new StringBuilder().append("You have just opened a ").append(getGuiContainerNameFromID(currentScreen)).append(" container (").append(currentScreen.getClass().getSimpleName()).append((container == null) ? "" : "; ").append((container == null) ? "" : container.getClass().getSimpleName()).append("), which has ").append(getSlotCountWithID(currentScreen)).append(" slots!").toString());
-			}
+			Constants.LOGGER.debug(new StringBuilder().append("You have just opened a ").append(getGuiContainerNameFromID(currentScreen)).append(" container (").append(currentScreen.getClass().getSimpleName()).append((container == null) ? "" : "; ").append((container == null) ? "" : container.getClass().getSimpleName()).append("), which has ").append(getSlotCountWithID(currentScreen)).append(" slots!").toString());
 
 			disableWheelForThisContainer = isWheelDisabledForThisContainer(currentScreen);
 		}
@@ -321,9 +320,7 @@ public class Main extends DeobfuscationLayer {
 				return;
 			}
 
-			if (Debug == 1) {
-				Logger.Log(new StringBuilder().append("You have selected a new slot, it's slot number is ").append(getSlotNumber(selectedSlot)).toString());
-			}
+			    Constants.LOGGER.debug(new StringBuilder().append("You have selected a new slot, it's slot number is ").append(getSlotNumber(selectedSlot)).toString());
 
 			boolean shiftIsDown = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
 
@@ -380,9 +377,7 @@ public class Main extends DeobfuscationLayer {
 
 		if ((wheel != 0) && (selectedSlot != null)) {
 			int numItemsToMove = Math.abs(wheel);
-			if (Debug == 1) {
-				Logger.Log("numItemsToMove: " + numItemsToMove);
-			}
+			    Constants.LOGGER.debug("numItemsToMove: " + numItemsToMove);
 
 			if (slotCount > Constants.INVENTORY_SIZE) {
 				ItemStack originalStack = getSlotStack(selectedSlot);

@@ -2,8 +2,9 @@ package yalter.mousetweaks;
 
 public class Logger {
 
+    @Deprecated
 	public static void Log(String textToLog) {
-		System.out.println("[Mouse Tweaks] " + textToLog);
+		Constants.LOGGER.info(textToLog);
 	}
 
 }

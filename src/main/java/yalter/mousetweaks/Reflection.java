@@ -33,7 +33,7 @@ public class Reflection {
 				int.class);
 
 		if (isMouseOverSlot == null) {
-			Logger.Log("Failed to get isMouseOverSlot method, quitting");
+		    Constants.LOGGER.error("Failed to get isMouseOverSlot method, quitting");
 			return false;
 		}
 
@@ -44,7 +44,7 @@ public class Reflection {
 				getObfuscatedName(Constants.FIELDE_MCP_NAME, Constants.FIELDE_FORGE_NAME, Constants.FIELDE_NAME));
 
 		if (field == null) {
-			Logger.Log("Failed to retrieve the E field, disabling RMBTweak");
+		    Constants.LOGGER.error("Failed to retrieve the E field, disabling RMBTweak");
 			Main.DisableRMBTweak = true;
 		} else {
 			guiContainerClass.storeField(Constants.FIELDE_FORGE_NAME, field);
@@ -53,7 +53,7 @@ public class Reflection {
 					getObfuscatedName(Constants.FIELDq_MCP_NAME, Constants.FIELDq_FORGE_NAME, Constants.FIELDq_NAME));
 
 			if (field == null) {
-				Logger.Log("Failed to retreive the q field, disabling RMBTweak");
+			    Constants.LOGGER.error("Failed to retreive the q field, disabling RMBTweak");
 				Main.DisableRMBTweak = true;
 			} else {
 				guiContainerClass.storeField(Constants.FIELDq_FORGE_NAME, field);
@@ -66,13 +66,13 @@ public class Reflection {
 	public static boolean registerLiteModListenerInLiteLoader() {
 		liteLoaderClass = new ReflectionCache();
 
-		Class lL = getClass("com.mumfrey.liteloader.core.LiteLoader");
+		Class<?> lL = getClass("com.mumfrey.liteloader.core.LiteLoader");
 		if (lL != null) {
 			liteLoaderClass.storeClass("LiteLoader", lL);
 
 			liteLoaderClass.available = true;
 
-			Class llEvents = getClass("com.mumfrey.liteloader.core.Events");
+			Class<?> llEvents = getClass("com.mumfrey.liteloader.core.Events");
 			if (llEvents != null) {
 				liteLoaderClass.storeClass("Events", llEvents);
 
@@ -80,7 +80,7 @@ public class Reflection {
 				if (llEventsField != null) {
 					liteLoaderClass.storeField("events", llEventsField);
 
-					Class lM = getClass("com.mumfrey.liteloader.LiteMod");
+					Class<?> lM = getClass("com.mumfrey.liteloader.LiteMod");
 					if (lM != null) {
 						liteLoaderClass.storeClass("LiteMod", lM);
 
@@ -96,7 +96,7 @@ public class Reflection {
 								if (liteLoaderInstance != null) {
 									Object llEventsInstance = liteLoaderClass.getFieldValue("events", liteLoaderInstance);
 									if (llEventsInstance != null) {
-										Class mouseTweaks = getClass("yalter.mousetweaks.loaders.LiteModMouseTweaks");
+										Class<?> mouseTweaks = getClass("yalter.mousetweaks.loaders.LiteModMouseTweaks");
 										if (mouseTweaks != null) {
 											liteModMouseTweaks = new ReflectionCache();
 											liteModMouseTweaks.storeClass("LiteModMouseTweaks", mouseTweaks);
@@ -110,21 +110,21 @@ public class Reflection {
 													liteLoaderClass.invokeMethod(llEventsInstance, "addListener", LMMTInstance);
 
 													liteLoaderClass.compatible = true;
-													Logger.Log("Registered the LiteModMouseTweaks' listener in LiteLoader.");
+													Constants.LOGGER.info("Registered the LiteModMouseTweaks' listener in LiteLoader.");
 
 													return true;
 												} else {
-													Logger.Log("Could not get the instance from the getInstance method of LiteModMouseTweaks! Have you modified the class?");
+												    Constants.LOGGER.error("Could not get the instance from the getInstance method of LiteModMouseTweaks! Have you modified the class?");
 												}
 											} else {
-												Logger.Log("Could not get the getInstance method from LiteModMouseTweaks! Have you modified the class?");
+											    Constants.LOGGER.error("Could not get the getInstance method from LiteModMouseTweaks! Have you modified the class?");
 											}
 										} else {
-											Logger.Log("Could not get the LiteModMouseTweaks class! Have you deleted it accidentally?");
+										    Constants.LOGGER.error("Could not get the LiteModMouseTweaks class! Have you deleted it accidentally?");
 										}
 									}
 								} else {
-									Logger.Log("Failed to retrieve the LiteLoader instance!");
+								    Constants.LOGGER.error("Failed to retrieve the LiteLoader instance!");
 								}
 							}
 						}
@@ -144,11 +144,11 @@ public class Reflection {
 		if (optifineProfilerEnabled != null) {
 			gameSettings.storeField("ofProfiler", optifineProfilerEnabled);
 
-			Logger.Log("Optifine is installed.");
+			Constants.LOGGER.info("Optifine is installed.");
 			return true;
 		}
 
-		Logger.Log("Optifine is not installed.");
+		Constants.LOGGER.info("Optifine is not installed.");
 		return false;
 	}
 
@@ -162,14 +162,14 @@ public class Reflection {
 			return minecraft.setFieldValue(Minecraft.getMinecraft(), "mcProfiler", new ProfilerCustom());
 		}
 
-		Logger.Log("Failed to get the Minecraft profiler field!");
+		Constants.LOGGER.error("Failed to get the Minecraft profiler field!");
 		return false;
 	}
 
 	public static boolean reflectForestry() {
 		forestry = new ReflectionCache();
 
-		Class guiForestryClass = getClass("forestry.core.gui.GuiForestry");
+		Class<?> guiForestryClass = getClass("forestry.core.gui.GuiForestry");
 		if (guiForestryClass != null) {
 			forestry.storeClass("GuiForestry", guiForestryClass);
 			forestry.available = true;
@@ -210,7 +210,7 @@ public class Reflection {
 	public static boolean reflectCodeChickenCore() {
 		codechickencore = new ReflectionCache();
 
-		Class guiContainerWidgetClass = getClass("codechicken.core.inventory.GuiContainerWidget");
+		Class<?> guiContainerWidgetClass = getClass("codechicken.core.inventory.GuiContainerWidget");
 		if (guiContainerWidgetClass != null) {
 			codechickencore.storeClass("GuiContainerWidget", guiContainerWidgetClass);
 
@@ -224,12 +224,12 @@ public class Reflection {
 	public static boolean reflectNEI() {
 		NEI = new ReflectionCache();
 
-		Class guiRecipeClass = getClass("codechicken.nei.recipe.GuiRecipe");
+		Class<?> guiRecipeClass = getClass("codechicken.nei.recipe.GuiRecipe");
 		if (guiRecipeClass != null) {
 			NEI.storeClass("GuiRecipe", guiRecipeClass);
 			NEI.available = true;
 
-			Class guiEnchantmentModifierClass = getClass("codechicken.nei.GuiEnchantmentModifier");
+			Class<?> guiEnchantmentModifierClass = getClass("codechicken.nei.GuiEnchantmentModifier");
 			if (guiEnchantmentModifierClass != null) {
 				NEI.storeClass("GuiEnchantmentModifier", guiEnchantmentModifierClass);
 
@@ -245,11 +245,11 @@ public class Reflection {
 	}
 
 	public static boolean doesClassExist(String name) {
-		Class clazz = getClass(name);
+		Class<?> clazz = getClass(name);
 		return clazz != null;
 	}
 
-	public static Class getClass(String name) {
+	public static Class<?> getClass(String name) {
 		try {
 			return Class.forName(name);
 		} catch (ClassNotFoundException e) {
@@ -259,7 +259,7 @@ public class Reflection {
 		return null;
 	}
 
-	public static Field getField(Class clazz, String name) {
+	public static Field getField(Class<?> clazz, String name) {
 		try {
 			Field field = null;
 
@@ -277,19 +277,14 @@ public class Reflection {
 			return field;
 		} catch (Exception e) {
 			if (name != "ofProfiler") {
-				Logger.Log("Could not retrieve field \"" + name + "\" from class \"" + clazz.getName()
-						+ "\"");
-
-				if (Main.Debug == 1) {
-					e.printStackTrace();
-				}
+			    Constants.LOGGER.error("Could not retrieve field \"" + name + "\" from class \"" + clazz.getName() + "\"", e);
 			}
 		}
 
 		return null;
 	}
 
-	public static Field getFinalField(Class clazz, String name) {
+	public static Field getFinalField(Class<?> clazz, String name) {
 		try {
 			Field field = null;
 
@@ -311,18 +306,13 @@ public class Reflection {
 			field.setAccessible(true);
 			return field;
 		} catch (Exception e) {
-			Logger.Log("Could not retrieve field \"" + name + "\" from class \"" + clazz.getName()
-					+ "\"");
-
-			if (Main.Debug == 1) {
-				e.printStackTrace();
-			}
+		    Constants.LOGGER.error("Could not retrieve field \"" + name + "\" from class \"" + clazz.getName() + "\"", e);
 		}
 
 		return null;
 	}
 
-	public static Method getMethod(Class<?> clazz, String name, Class... args) {
+	public static Method getMethod(Class<?> clazz, String name, Class<?>... args) {
 		try {
 			Method method = null;
 
@@ -343,12 +333,7 @@ public class Reflection {
 			method.setAccessible(true);
 			return method;
 		} catch (Exception e) {
-			Logger.Log("Could not retrieve method \"" + name + "\" from class \"" + clazz.getName()
-					+ "\"");
-
-			if (Main.Debug == 1) {
-				e.printStackTrace();
-			}
+		    Constants.LOGGER.error("Could not retrieve method \"" + name + "\" from class \"" + clazz.getName() + "\"", e);
 		}
 
 		return null;
@@ -375,7 +360,7 @@ public class Reflection {
 	public static void checkObfuscation() {
 		checkObfuscation = false;
 
-		Logger.Log("Obfuscation check, please ignore the following errors (if they come up).");
+		Constants.LOGGER.info("Obfuscation check, please ignore the following errors (if they come up).");
 
 		if (getField(Minecraft.class, Constants.MCPROFILER_MCP_NAME) != null)
 			obfuscation = Obfuscation.MCP;
@@ -384,6 +369,6 @@ public class Reflection {
 		else
 			obfuscation = Obfuscation.VANILLA;
 
-		Logger.Log("Obfuscation check completed.");
+		Constants.LOGGER.info("Obfuscation check completed.");
 	}
 }

@@ -7,9 +7,9 @@ import java.util.HashMap;
 public class ReflectionCache {
 	public boolean available = false;
 	public boolean compatible = false;
-	public HashMap<String, Class> classes = new HashMap<String, Class>();
-	public HashMap<String, Method> methods = new HashMap<String, Method>();
-	public HashMap<String, Field> fields = new HashMap<String, Field>();
+	public HashMap<String, Class<?>> classes = new HashMap<>();
+	public HashMap<String, Method> methods = new HashMap<>();
+	public HashMap<String, Field> fields = new HashMap<>();
 
 	public ReflectionCache() {
 	}
@@ -21,10 +21,10 @@ public class ReflectionCache {
 				return field.get(obj);
 			}
 
-			Logger.Log("No such field: " + name);
+			Constants.LOGGER.error("No such field: " + name);
 		} catch (Exception e) {
 			e.printStackTrace();
-			Logger.Log("Failed to get a value of field: " + name);
+			Constants.LOGGER.error("Failed to get a value of field: " + name);
 		}
 
 		return null;
@@ -39,10 +39,10 @@ public class ReflectionCache {
 				return true;
 			}
 
-			Logger.Log("No such field: " + name);
+			Constants.LOGGER.error("No such field: " + name);
 		} catch (Exception e) {
 			e.printStackTrace();
-			Logger.Log("Failed to set a value of field: " + name);
+			Constants.LOGGER.error("Failed to set a value of field: " + name);
 		}
 
 		return false;
@@ -59,10 +59,10 @@ public class ReflectionCache {
 				return method.invoke(obj, new Object[0]);
 			}
 
-			Logger.Log("No such method: " + name);
+			Constants.LOGGER.error("No such method: " + name);
 		} catch (Exception e) {
 			e.printStackTrace();
-			Logger.Log("Failed to invoke method: " + name);
+			Constants.LOGGER.error("Failed to invoke method: " + name);
 		}
 
 		return null;
@@ -70,7 +70,7 @@ public class ReflectionCache {
 
 	public Object invokeStaticMethod(String className, String name, Object... args) {
 		if (classes.containsKey(className)) {
-			Class clazz = classes.get(className);
+			Class<?> clazz = classes.get(className);
 
 			return invokeMethod(clazz, name, args);
 		}
@@ -80,14 +80,14 @@ public class ReflectionCache {
 
 	public boolean isInstance(String className, Object obj) {
 		if (classes.containsKey(className)) {
-			Class clazz = classes.get(className);
+			Class<?> clazz = classes.get(className);
 			return clazz.isInstance(obj);
 		}
 
 		return false;
 	}
 
-	public void storeClass(String name, Class clazz) {
+	public void storeClass(String name, Class<?> clazz) {
 		classes.put(name, clazz);
 	}
 

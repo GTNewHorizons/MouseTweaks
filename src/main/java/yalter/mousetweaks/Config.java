@@ -25,8 +25,7 @@ public class Config {
 			return true;
 		} catch (FileNotFoundException ignored) {
 		} catch (IOException e) {
-			Logger.Log("Failed to read the config file: " + fileName);
-			e.printStackTrace();
+		    Constants.LOGGER.error("Failed to read the config file: " + fileName, e);
 		}
 
 		return false;
@@ -45,8 +44,7 @@ public class Config {
 
 			return true;
 		} catch (IOException e) {
-			Logger.Log("Failed to write the config file: " + fileName);
-			e.printStackTrace();
+            Constants.LOGGER.error("Failed to write the config file: " + fileName, e);
 		}
 
 		return false;

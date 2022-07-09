@@ -1,9 +1,14 @@
 package yalter.mousetweaks;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Constants {
 	public static final String MOD_NAME    = "@MODNAME@";
 	public static final String MOD_ID      = "@MODID@";
 	public static final String MOD_VERSION = "@VERSION@";
+    
+    public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 
 	// Obfuscated names
 	public static final String ISMOUSEOVERSLOT_NAME = "a";

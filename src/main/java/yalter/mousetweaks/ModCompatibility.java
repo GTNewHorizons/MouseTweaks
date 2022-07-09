@@ -17,17 +17,17 @@ public class ModCompatibility extends DeobfuscationLayer {
 
 		forestryInstalled = Reflection.reflectForestry();
 		if (forestryInstalled) {
-			Logger.Log("Successfully reflected Forestry!");
+			Constants.LOGGER.info("Successfully reflected Forestry!");
 		}
 
 		codechickencoreInstalled = Reflection.reflectCodeChickenCore();
 		if (codechickencoreInstalled) {
-			Logger.Log("Successfully reflected CodeChickenCore!");
+		    Constants.LOGGER.info("Successfully reflected CodeChickenCore!");
 		}
 
 		NEIInstalled = Reflection.reflectNEI();
 		if (NEIInstalled) {
-			Logger.Log("Successfully reflected NEI!");
+		    Constants.LOGGER.info("Successfully reflected NEI!");
 		}
 
 		initialized = true;
