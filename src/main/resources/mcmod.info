@@ -1,0 +1,21 @@
+{
+	"modListVersion": 2,
+	"modList": [{
+		"modid": "${modId}",
+		"name": "${modName}",
+		"description": "A mod that enhances the inventory management by adding various additional functions to the usual mouse buttons.",
+		"version": "${modVersion}",
+		"mcversion": "${minecraftVersion}",
+		"url": "https://www.curseforge.com/minecraft/mc-mods/mouse-tweaks",
+		"updateUrl": "",
+		"authorList": ["YaLTeR"],
+		"credits": "Various open-source mods from where I learned.",
+		"logoFile": "mousetweaks_logo.png",
+		"screenshots": [],
+		"parent": "",
+		"requiredMods": [],
+		"dependencies": [],
+		"dependants": [],
+		"useDependencyInformation": true
+	}]
+}
