@@ -1,5 +1,6 @@
 package yalter.mousetweaks;
 
+import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,6 +11,8 @@ public class Constants {
     public static final String MOD_VERSION = "GRADLETOKEN_VERSION";
 
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
+
+    public static final boolean DEV_ENV = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
     // Inventory-related stuff
     public static final int INVENTORY_SIZE = 36; // Size of the player inventory
