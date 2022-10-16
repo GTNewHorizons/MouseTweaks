@@ -108,17 +108,19 @@ public class Main extends DeobfuscationLayer {
             container = getContainerWithID(currentScreen);
             disableForThisContainer = isDisabledForThisContainer(currentScreen);
 
-            Constants.LOGGER.debug(new StringBuilder()
-                    .append("You have just opened a ")
-                    .append(getGuiContainerNameFromID(currentScreen))
-                    .append(" container (")
-                    .append(currentScreen.getClass().getSimpleName())
-                    .append((container == null) ? "" : "; ")
-                    .append((container == null) ? "" : container.getClass().getSimpleName())
-                    .append("), which has ")
-                    .append(getSlotCountWithID(currentScreen))
-                    .append(" slots!")
-                    .toString());
+            if (Constants.DEV_ENV) {
+                Constants.LOGGER.debug(new StringBuilder()
+                        .append("You have just opened a ")
+                        .append(getGuiContainerNameFromID(currentScreen))
+                        .append(" container (")
+                        .append(currentScreen.getClass().getSimpleName())
+                        .append((container == null) ? "" : "; ")
+                        .append((container == null) ? "" : container.getClass().getSimpleName())
+                        .append("), which has ")
+                        .append(getSlotCountWithID(currentScreen))
+                        .append(" slots!")
+                        .toString());
+            }
 
             disableWheelForThisContainer = isWheelDisabledForThisContainer(currentScreen);
         }
@@ -185,10 +187,12 @@ public class Main extends DeobfuscationLayer {
                 return;
             }
 
-            Constants.LOGGER.debug(new StringBuilder()
-                    .append("You have selected a new slot, it's slot number is ")
-                    .append(getSlotNumber(selectedSlot))
-                    .toString());
+            if (Constants.DEV_ENV) {
+                Constants.LOGGER.debug(new StringBuilder()
+                        .append("You have selected a new slot, it's slot number is ")
+                        .append(getSlotNumber(selectedSlot))
+                        .toString());
+            }
 
             boolean shiftIsDown = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
 
@@ -248,7 +252,9 @@ public class Main extends DeobfuscationLayer {
 
         if ((wheel != 0) && (selectedSlot != null)) {
             int numItemsToMove = Math.abs(wheel);
-            Constants.LOGGER.debug("numItemsToMove: " + numItemsToMove);
+            if (Constants.DEV_ENV) {
+                Constants.LOGGER.debug("numItemsToMove: " + numItemsToMove);
+            }
 
             if (slotCount > Constants.INVENTORY_SIZE) {
                 ItemStack originalStack = getSlotStack(selectedSlot);
