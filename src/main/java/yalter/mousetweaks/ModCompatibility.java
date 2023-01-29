@@ -2,9 +2,11 @@ package yalter.mousetweaks;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.inventory.Slot;
+
 import yalter.mousetweaks.api.IMTModGuiContainer;
 
 public class ModCompatibility extends DeobfuscationLayer {
+
     private static boolean initialized = false;
 
     private static boolean forestryInstalled = false;
@@ -41,7 +43,8 @@ public class ModCompatibility extends DeobfuscationLayer {
             return Constants.CODECHICKENCORE;
 
         if ((NEIInstalled && (Reflection.NEI.isInstance("GuiRecipe", guiScreen)))
-                || Reflection.NEI.isInstance("GuiEnchantmentModifier", guiScreen)) return Constants.NEI;
+                || Reflection.NEI.isInstance("GuiEnchantmentModifier", guiScreen))
+            return Constants.NEI;
 
         return Constants.NOTGUICONTAINER;
     }
@@ -88,15 +91,15 @@ public class ModCompatibility extends DeobfuscationLayer {
         }
     }
 
-    public static boolean modIsCraftingOutputSlot(
-            int modGuiContainerID, GuiScreen guiScreen, Object modContainer, Slot selectedSlot) {
+    public static boolean modIsCraftingOutputSlot(int modGuiContainerID, GuiScreen guiScreen, Object modContainer,
+            Slot selectedSlot) {
         switch (modGuiContainerID) {
             case Constants.MTMODGUICONTAINER:
                 return ((IMTModGuiContainer) guiScreen).isCraftingOutputSlot(modContainer, selectedSlot);
 
             case Constants.FORESTRY:
                 return (Reflection.is(modContainer, "ContainerSqueezer")
-                                && ((getSlotNumber(selectedSlot) == 9) || (getSlotNumber(selectedSlot) == 11)))
+                        && ((getSlotNumber(selectedSlot) == 9) || (getSlotNumber(selectedSlot) == 11)))
                         || (Reflection.is(modContainer, "ContainerMoistener") && (getSlotNumber(selectedSlot) == 9))
                         || (Reflection.is(modContainer, "ContainerCentrifuge")
                                 && ((getSlotNumber(selectedSlot) >= 1) && (getSlotNumber(selectedSlot) <= 9)))
@@ -109,21 +112,16 @@ public class ModCompatibility extends DeobfuscationLayer {
         }
     }
 
-    public static void modClickSlot(
-            int modGuiContainerID,
-            GuiScreen guiScreen,
-            Object modContainer,
-            Slot targetSlot,
-            int mouseButton,
-            boolean shiftPressed) {
+    public static void modClickSlot(int modGuiContainerID, GuiScreen guiScreen, Object modContainer, Slot targetSlot,
+            int mouseButton, boolean shiftPressed) {
         switch (modGuiContainerID) {
             case Constants.MTMODGUICONTAINER:
                 ((IMTModGuiContainer) guiScreen).clickModSlot(modContainer, targetSlot, mouseButton, shiftPressed);
                 return;
 
             case Constants.FORESTRY:
-                Reflection.forestry.invokeMethod(
-                        guiScreen, "handleMouseClick", targetSlot, 0, mouseButton, shiftPressed ? 1 : 0);
+                Reflection.forestry
+                        .invokeMethod(guiScreen, "handleMouseClick", targetSlot, 0, mouseButton, shiftPressed ? 1 : 0);
                 return;
 
             case Constants.NEI:
@@ -139,15 +137,19 @@ public class ModCompatibility extends DeobfuscationLayer {
         }
     }
 
-    public static Slot getModSelectedSlot(
-            int modGuiContainerID, GuiScreen guiScreen, Object modContainer, int slotCount) {
+    public static Slot getModSelectedSlot(int modGuiContainerID, GuiScreen guiScreen, Object modContainer,
+            int slotCount) {
         switch (modGuiContainerID) {
             case Constants.MTMODGUICONTAINER:
                 return asSlot(((IMTModGuiContainer) guiScreen).getModSelectedSlot(modContainer, slotCount));
 
             case Constants.FORESTRY:
-                return asSlot(Reflection.forestry.invokeMethod(
-                        guiScreen, "getSlotAtPosition", getRequiredMouseX(), getRequiredMouseY()));
+                return asSlot(
+                        Reflection.forestry.invokeMethod(
+                                guiScreen,
+                                "getSlotAtPosition",
+                                getRequiredMouseX(),
+                                getRequiredMouseY()));
             case Constants.NEI:
                 return getSelectedSlot(asGuiContainer(guiScreen), asContainer(modContainer), slotCount);
 
@@ -186,8 +188,8 @@ public class ModCompatibility extends DeobfuscationLayer {
         }
     }
 
-    public static void disableRMBDragIfRequired(
-            int guiContainerID, GuiScreen guiScreen, Object modContainer, Slot firstSlot, boolean shouldClick) {
+    public static void disableRMBDragIfRequired(int guiContainerID, GuiScreen guiScreen, Object modContainer,
+            Slot firstSlot, boolean shouldClick) {
         switch (guiContainerID) {
             case Constants.MTMODGUICONTAINER:
                 ((IMTModGuiContainer) guiScreen).disableRMBDragIfRequired(modContainer, firstSlot, shouldClick);

@@ -1,10 +1,12 @@
 package yalter.mousetweaks;
 
 import java.io.File;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -109,17 +111,14 @@ public class Main extends DeobfuscationLayer {
             disableForThisContainer = isDisabledForThisContainer(currentScreen);
 
             if (Constants.DEV_ENV) {
-                Constants.LOGGER.debug(new StringBuilder()
-                        .append("You have just opened a ")
-                        .append(getGuiContainerNameFromID(currentScreen))
-                        .append(" container (")
-                        .append(currentScreen.getClass().getSimpleName())
-                        .append((container == null) ? "" : "; ")
-                        .append((container == null) ? "" : container.getClass().getSimpleName())
-                        .append("), which has ")
-                        .append(getSlotCountWithID(currentScreen))
-                        .append(" slots!")
-                        .toString());
+                Constants.LOGGER.debug(
+                        new StringBuilder().append("You have just opened a ")
+                                .append(getGuiContainerNameFromID(currentScreen)).append(" container (")
+                                .append(currentScreen.getClass().getSimpleName())
+                                .append((container == null) ? "" : "; ")
+                                .append((container == null) ? "" : container.getClass().getSimpleName())
+                                .append("), which has ").append(getSlotCountWithID(currentScreen)).append(" slots!")
+                                .toString());
             }
 
             disableWheelForThisContainer = isWheelDisabledForThisContainer(currentScreen);
@@ -127,19 +126,19 @@ public class Main extends DeobfuscationLayer {
 
         if (guiContainerID == Constants.NOTGUICONTAINER) return;
 
-        if ((Main.DisableRMBTweak || (Main.RMBTweak == 0))
-                && (Main.LMBTweakWithoutItem == 0)
+        if ((Main.DisableRMBTweak || (Main.RMBTweak == 0)) && (Main.LMBTweakWithoutItem == 0)
                 && (Main.LMBTweakWithItem == 0)
-                && (Main.WheelTweak == 0)) return;
+                && (Main.WheelTweak == 0))
+            return;
 
         if (disableForThisContainer) return;
 
-        int slotCount = getSlotCountWithID(
-                currentScreen); // It's better to have this here, because there are some inventories that change slot
+        int slotCount = getSlotCountWithID(currentScreen); // It's better to have this here, because there are some
+                                                           // inventories that change slot
         // count during
         // runtime (for example NEI's crafting recipe GUI).
         if (slotCount == 0) // If there are no slots, then there is nothing to do.
-        return;
+            return;
 
         int wheel = ((Main.WheelTweak == 1) && !disableWheelForThisContainer) ? Mouse.getDWheel() / 120 : 0;
 
@@ -188,10 +187,9 @@ public class Main extends DeobfuscationLayer {
             }
 
             if (Constants.DEV_ENV) {
-                Constants.LOGGER.debug(new StringBuilder()
-                        .append("You have selected a new slot, it's slot number is ")
-                        .append(getSlotNumber(selectedSlot))
-                        .toString());
+                Constants.LOGGER.debug(
+                        new StringBuilder().append("You have selected a new slot, it's slot number is ")
+                                .append(getSlotNumber(selectedSlot)).toString());
             }
 
             boolean shiftIsDown = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
@@ -199,8 +197,7 @@ public class Main extends DeobfuscationLayer {
             if (Mouse.isButtonDown(1)) { // Right mouse button
                 if ((Main.RMBTweak == 1) && !Main.DisableRMBTweak) {
 
-                    if ((stackOnMouse != null)
-                            && areStacksCompatible(stackOnMouse, targetStack)
+                    if ((stackOnMouse != null) && areStacksCompatible(stackOnMouse, targetStack)
                             && !isCraftingOutputSlot(currentScreen, selectedSlot)) {
                         if ((firstSlot != null) && !firstSlotClicked) {
                             firstSlotClicked = true;
@@ -260,11 +257,9 @@ public class Main extends DeobfuscationLayer {
                 ItemStack originalStack = getSlotStack(selectedSlot);
                 boolean isCraftingOutput = isCraftingOutputSlot(currentScreen, selectedSlot);
 
-                if ((originalStack != null)
-                        && ((stackOnMouse == null)
-                                || (isCraftingOutput
-                                        ? areStacksCompatible(originalStack, stackOnMouse)
-                                        : !areStacksCompatible(originalStack, stackOnMouse)))) {
+                if ((originalStack != null) && ((stackOnMouse == null)
+                        || (isCraftingOutput ? areStacksCompatible(originalStack, stackOnMouse)
+                                : !areStacksCompatible(originalStack, stackOnMouse)))) {
                     do {
                         Slot applicableSlot = null;
 
@@ -281,8 +276,7 @@ public class Main extends DeobfuscationLayer {
                                 ItemStack stackSl = getSlotStack(sl);
 
                                 if (stackSl == null) {
-                                    if ((applicableSlot == null)
-                                            && (wheel < 0)
+                                    if ((applicableSlot == null) && (wheel < 0)
                                             && sl.isItemValid(originalStack)
                                             && !isCraftingOutputSlot(currentScreen, sl)) {
                                         applicableSlot = sl;
@@ -337,16 +331,15 @@ public class Main extends DeobfuscationLayer {
                         if (applicableSlot != null) {
                             Slot slotTo = (wheel < 0) ? applicableSlot : selectedSlot;
                             Slot slotFrom = (wheel < 0) ? selectedSlot : applicableSlot;
-                            ItemStack stackTo =
-                                    (getSlotStack(slotTo) != null) ? copyItemStack(getSlotStack(slotTo)) : null;
+                            ItemStack stackTo = (getSlotStack(slotTo) != null) ? copyItemStack(getSlotStack(slotTo))
+                                    : null;
                             ItemStack stackFrom = copyItemStack(getSlotStack(slotFrom));
 
                             if (wheel < 0) {
                                 numItemsToMove = Math.min(numItemsToMove, getItemStackSize(stackFrom));
 
-                                if ((stackTo != null)
-                                        && ((getMaxItemStackSize(stackTo) - getItemStackSize(stackTo))
-                                                <= numItemsToMove)) {
+                                if ((stackTo != null) && ((getMaxItemStackSize(stackTo) - getItemStackSize(stackTo))
+                                        <= numItemsToMove)) {
                                     clickSlot(currentScreen, slotFrom, 0, false);
                                     clickSlot(currentScreen, slotTo, 0, false);
                                     clickSlot(currentScreen, slotFrom, 0, false);
@@ -405,11 +398,11 @@ public class Main extends DeobfuscationLayer {
     }
 
     public static int getGuiContainerID(GuiScreen currentScreen) {
-        int containerID = ModCompatibility.getModGuiContainerID(
-                currentScreen); // This first because a lot of mod containers extend the vanilla Minecraft one.
+        int containerID = ModCompatibility.getModGuiContainerID(currentScreen); // This first because a lot of mod
+                                                                                // containers extend the vanilla
+                                                                                // Minecraft one.
         if (containerID == Constants.NOTGUICONTAINER)
-            return (isGuiContainer(currentScreen) && isValidGuiContainer(currentScreen))
-                    ? Constants.MINECRAFT
+            return (isGuiContainer(currentScreen) && isValidGuiContainer(currentScreen)) ? Constants.MINECRAFT
                     : Constants.NOTGUICONTAINER;
         else return containerID;
     }
@@ -420,8 +413,7 @@ public class Main extends DeobfuscationLayer {
     }
 
     public static int getSlotCountWithID(GuiScreen currentScreen) {
-        if (guiContainerID == Constants.MINECRAFT)
-            return getSlots(asContainer(container)).size();
+        if (guiContainerID == Constants.MINECRAFT) return getSlots(asContainer(container)).size();
         else return ModCompatibility.getModSlotCount(guiContainerID, currentScreen, container);
     }
 
@@ -458,10 +450,13 @@ public class Main extends DeobfuscationLayer {
     public static void clickSlot(GuiScreen currentScreen, Slot targetSlot, int mouseButton, boolean shiftPressed) {
         if (guiContainerID == Constants.MINECRAFT) {
             windowClick(
-                    getWindowId(asContainer(container)), getSlotNumber(targetSlot), mouseButton, shiftPressed ? 1 : 0);
+                    getWindowId(asContainer(container)),
+                    getSlotNumber(targetSlot),
+                    mouseButton,
+                    shiftPressed ? 1 : 0);
         } else {
-            ModCompatibility.modClickSlot(
-                    guiContainerID, currentScreen, container, targetSlot, mouseButton, shiftPressed);
+            ModCompatibility
+                    .modClickSlot(guiContainerID, currentScreen, container, targetSlot, mouseButton, shiftPressed);
         }
     }
 

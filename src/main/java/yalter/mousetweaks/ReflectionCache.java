@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 public class ReflectionCache {
+
     public boolean available = false;
     public boolean compatible = false;
     public HashMap<String, Class<?>> classes = new HashMap<>();

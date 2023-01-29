@@ -3,6 +3,7 @@ package yalter.mousetweaks;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
 import net.minecraft.inventory.Slot;
 
 public class Reflection {
@@ -28,7 +29,12 @@ public class Reflection {
                     forestry.storeMethod("getSlotAtPosition", getSlotAtPositionMethod);
 
                     Method handleMouseClickMethod = getMethod(
-                            guiForestryClass, "handleMouseClick", Slot.class, int.class, int.class, int.class);
+                            guiForestryClass,
+                            "handleMouseClick",
+                            Slot.class,
+                            int.class,
+                            int.class,
+                            int.class);
                     if (handleMouseClickMethod != null) {
                         forestry.storeMethod("handleMouseClick", handleMouseClickMethod);
 
@@ -123,8 +129,8 @@ public class Reflection {
             return field;
         } catch (Exception e) {
             if (name != "ofProfiler") {
-                Constants.LOGGER.error(
-                        "Could not retrieve field \"" + name + "\" from class \"" + clazz.getName() + "\"", e);
+                Constants.LOGGER
+                        .error("Could not retrieve field \"" + name + "\" from class \"" + clazz.getName() + "\"", e);
             }
         }
 
@@ -153,8 +159,8 @@ public class Reflection {
             field.setAccessible(true);
             return field;
         } catch (Exception e) {
-            Constants.LOGGER.error(
-                    "Could not retrieve field \"" + name + "\" from class \"" + clazz.getName() + "\"", e);
+            Constants.LOGGER
+                    .error("Could not retrieve field \"" + name + "\" from class \"" + clazz.getName() + "\"", e);
         }
 
         return null;
@@ -181,8 +187,8 @@ public class Reflection {
             method.setAccessible(true);
             return method;
         } catch (Exception e) {
-            Constants.LOGGER.error(
-                    "Could not retrieve method \"" + name + "\" from class \"" + clazz.getName() + "\"", e);
+            Constants.LOGGER
+                    .error("Could not retrieve method \"" + name + "\" from class \"" + clazz.getName() + "\"", e);
         }
 
         return null;
@@ -190,7 +196,8 @@ public class Reflection {
 
     public static String methodToString(Method method) {
         return Modifier.toString(method.getModifiers()) + " "
-                + ((method.getReturnType() != null) ? method.getReturnType().getName() : "void") + " "
+                + ((method.getReturnType() != null) ? method.getReturnType().getName() : "void")
+                + " "
                 + method.getName();
     }
 }

@@ -1,6 +1,7 @@
 package yalter.mousetweaks;
 
 import net.minecraft.launchwrapper.Launch;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

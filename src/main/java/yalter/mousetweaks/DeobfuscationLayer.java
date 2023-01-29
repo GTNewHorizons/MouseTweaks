@@ -1,6 +1,7 @@
 package yalter.mousetweaks;
 
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
@@ -16,6 +17,7 @@ import net.minecraft.inventory.ContainerRepair;
 import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import org.lwjgl.input.Mouse;
 
 public class DeobfuscationLayer {
@@ -31,8 +33,7 @@ public class DeobfuscationLayer {
     }
 
     protected static boolean isValidGuiContainer(GuiScreen guiScreen) {
-        return (guiScreen != null)
-                && !(guiScreen.getClass().getSimpleName().contains("CJB_GuiCrafting"))
+        return (guiScreen != null) && !(guiScreen.getClass().getSimpleName().contains("CJB_GuiCrafting"))
                 && !(guiScreen.getClass().equals(GuiContainerCreative.class));
     }
 
@@ -135,7 +136,8 @@ public class DeobfuscationLayer {
     }
 
     /**
-     * Disables the vanilla RMB drag mechanic in the given GuiContainer. If your guiContainer is based on the vanilla GuiContainer, you can use this method to disable the RMB drag.
+     * Disables the vanilla RMB drag mechanic in the given GuiContainer. If your guiContainer is based on the vanilla
+     * GuiContainer, you can use this method to disable the RMB drag.
      *
      * @param guiContainer The guiContainer to disable RMB drag in.
      */

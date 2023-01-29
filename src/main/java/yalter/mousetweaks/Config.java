@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.Properties;
 
 public class Config {
+
     private String fileName;
     private Properties properties = new Properties();
 
@@ -22,8 +23,7 @@ public class Config {
             if (properties.size() == 0) return false;
 
             return true;
-        } catch (FileNotFoundException ignored) {
-        } catch (IOException e) {
+        } catch (FileNotFoundException ignored) {} catch (IOException e) {
             Constants.LOGGER.error("Failed to read the config file: " + fileName, e);
         }
 

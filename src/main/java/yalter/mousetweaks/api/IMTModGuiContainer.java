@@ -1,6 +1,7 @@
 package yalter.mousetweaks.api;
 
 public interface IMTModGuiContainer {
+
     /**
      * Returns the API version.
      *
@@ -39,14 +40,16 @@ public interface IMTModGuiContainer {
     public boolean isCraftingOutputSlot(Object modContainer, Object slot);
 
     /**
-     * Returns the container of this GuiContainer. If multiple containers are used, returns the one that is used at the moment of the method execution.
+     * Returns the container of this GuiContainer. If multiple containers are used, returns the one that is used at the
+     * moment of the method execution.
      *
      * @return The container that is currently used.
      */
     public Object getModContainer();
 
     /**
-     * Returns the number of slots present in the given container (for containers with variable slot number - the number of slots at the moment of the method execution).
+     * Returns the number of slots present in the given container (for containers with variable slot number - the number
+     * of slots at the moment of the method execution).
      *
      * @param modContainer The container to retrieve the number of slots from.
      * @return The number of slots in the given container.
@@ -63,7 +66,8 @@ public interface IMTModGuiContainer {
     public Object getModSlot(Object modContainer, int slotNumber);
 
     /**
-     * Returns the currently selected slot (the one under the player's mouse cursor) of the given container, which has the given number of slots.
+     * Returns the currently selected slot (the one under the player's mouse cursor) of the given container, which has
+     * the given number of slots.
      *
      * @param modContainer The container to check.
      * @param slotCount    The number of slots that this container has.
@@ -82,7 +86,9 @@ public interface IMTModGuiContainer {
     public void clickModSlot(Object modContainer, Object slot, int mouseButton, boolean shiftPressed);
 
     /**
-     * The method that disables the built-in RMB drag mechanic, if required, in this GuiContainer, with the given first slot in the given container to click if shouldClick is set to true (in vanilla circumstances - your RMB dragging mechanic might work differently).
+     * The method that disables the built-in RMB drag mechanic, if required, in this GuiContainer, with the given first
+     * slot in the given container to click if shouldClick is set to true (in vanilla circumstances - your RMB dragging
+     * mechanic might work differently).
      *
      * @param modContainer The container of the first slot.
      * @param firstSlot    The first slot.
