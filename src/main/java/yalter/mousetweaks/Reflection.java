@@ -3,6 +3,7 @@ package yalter.mousetweaks;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Objects;
 
 import net.minecraft.inventory.Slot;
 
@@ -128,7 +129,8 @@ public class Reflection {
             field.setAccessible(true);
             return field;
         } catch (Exception e) {
-            if (name != "ofProfiler") {
+            // GTNH Forestry version doesn't need the special handling here
+            if (!Objects.equals(name, "ofProfiler") && !Objects.equals(name, "inventorySlots")) {
                 Constants.LOGGER
                         .error("Could not retrieve field \"" + name + "\" from class \"" + clazz.getName() + "\"", e);
             }
