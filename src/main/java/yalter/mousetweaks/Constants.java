@@ -7,8 +7,8 @@ import org.apache.logging.log4j.Logger;
 
 public class Constants {
 
-    public static final String MOD_NAME = "GRADLETOKEN_MODNAME";
-    public static final String MOD_ID = "GRADLETOKEN_MODID";
+    public static final String MOD_NAME = "Mouse Tweaks";
+    public static final String MOD_ID = "MouseTweaks";
     public static final String MOD_VERSION = "GRADLETOKEN_VERSION";
 
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
