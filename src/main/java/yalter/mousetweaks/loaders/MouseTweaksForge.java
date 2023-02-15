@@ -12,13 +12,16 @@ import cpw.mods.fml.common.gameevent.TickEvent;
         modid = Constants.MOD_ID,
         name = Constants.MOD_NAME,
         version = Constants.MOD_VERSION,
-        acceptedMinecraftVersions = "[1.7.10]")
+        acceptedMinecraftVersions = "[1.7.10]",
+        acceptableRemoteVersions = "*")
 public class MouseTweaksForge {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        Main.initialise();
-        FMLCommonHandler.instance().bus().register(this);
+        if (FMLCommonHandler.instance().getSide().isClient()) {
+            Main.initialise();
+            FMLCommonHandler.instance().bus().register(this);
+        }
     }
 
     @SubscribeEvent
