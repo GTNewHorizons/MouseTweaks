@@ -19,6 +19,7 @@ public class Main extends DeobfuscationLayer {
     public static int LMBTweakWithoutItem = 0;
     public static int WheelTweak = 0;
     public static int WheelSearchOrder = 1;
+    public static int ScrollItemScaling = 0;
 
     public static Config mainConfig;
     private static GuiScreen oldGuiScreen = null;
@@ -52,6 +53,7 @@ public class Main extends DeobfuscationLayer {
         LMBTweakWithoutItem = mainConfig.getOrCreateIntProperty("LMBTweakWithoutItem", 1);
         WheelTweak = mainConfig.getOrCreateIntProperty("WheelTweak", 1);
         WheelSearchOrder = mainConfig.getOrCreateIntProperty("WheelSearchOrder", 1);
+        ScrollItemScaling = mainConfig.getOrCreateIntProperty("ScrollItemScaling", 0);
 
         boolean savedConfig = saveConfigFile();
 
@@ -64,6 +66,7 @@ public class Main extends DeobfuscationLayer {
         mainConfig.setIntProperty("LMBTweakWithoutItem", LMBTweakWithoutItem);
         mainConfig.setIntProperty("WheelTweak", WheelTweak);
         mainConfig.setIntProperty("WheelSearchOrder", WheelSearchOrder);
+        mainConfig.setIntProperty("ScrollItemScaling", ScrollItemScaling);
 
         return mainConfig.saveConfig();
     }
@@ -140,7 +143,7 @@ public class Main extends DeobfuscationLayer {
         if (slotCount == 0) // If there are no slots, then there is nothing to do.
             return;
 
-        int wheel = ((Main.WheelTweak == 1) && !disableWheelForThisContainer) ? Mouse.getDWheel() / 120 : 0;
+        int wheel = ((Main.WheelTweak == 1) && !disableWheelForThisContainer) ? Mouse.getDWheel() : 0;
 
         if (!Mouse.isButtonDown(1)) {
             firstSlotClicked = false;
@@ -248,7 +251,13 @@ public class Main extends DeobfuscationLayer {
         }
 
         if ((wheel != 0) && (selectedSlot != null)) {
-            int numItemsToMove = Math.abs(wheel);
+            int numItemsToMove;
+            if (ScrollItemScaling == 0) {
+                numItemsToMove = Math.abs(wheel) / 120;
+            } else {
+                numItemsToMove = 1;
+            }
+
             if (Constants.DEV_ENV) {
                 Constants.LOGGER.debug("numItemsToMove: " + numItemsToMove);
             }
