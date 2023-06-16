@@ -15,6 +15,7 @@ import net.minecraft.inventory.ContainerFurnace;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.ContainerRepair;
 import net.minecraft.inventory.ContainerWorkbench;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -60,12 +61,12 @@ public class DeobfuscationLayer {
         return guiContainer.inventorySlots;
     }
 
-    protected static List<?> getSlots(Container container) {
+    protected static List<Slot> getSlots(Container container) {
         return container.inventorySlots;
     }
 
     protected static Slot getSlot(Container container, int index) {
-        return (Slot) (getSlots(container).get(index));
+        return getSlots(container).get(index);
     }
 
     protected static ItemStack getSlotStack(Slot slot) {
@@ -106,8 +107,16 @@ public class DeobfuscationLayer {
         return mc.playerController;
     }
 
+    protected static IInventory getSlotInventory(Slot slot) {
+        return slot.inventory;
+    }
+
     protected static int getSlotNumber(Slot slot) {
         return slot.slotNumber;
+    }
+
+    protected static int getSlotYPosition(Slot slot) {
+        return slot.yDisplayPosition;
     }
 
     protected static int getItemStackSize(ItemStack itemStack) {

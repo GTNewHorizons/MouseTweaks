@@ -1,6 +1,7 @@
 package yalter.mousetweaks;
 
 import java.io.File;
+import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -19,6 +20,7 @@ public class Main extends DeobfuscationLayer {
     public static int LMBTweakWithoutItem = 0;
     public static int WheelTweak = 0;
     public static int WheelSearchOrder = 1;
+    public static int WheelScrollDirection = 0;
     public static int ScrollItemScaling = 0;
 
     public static Config mainConfig;
@@ -53,6 +55,7 @@ public class Main extends DeobfuscationLayer {
         LMBTweakWithoutItem = mainConfig.getOrCreateIntProperty("LMBTweakWithoutItem", 1);
         WheelTweak = mainConfig.getOrCreateIntProperty("WheelTweak", 1);
         WheelSearchOrder = mainConfig.getOrCreateIntProperty("WheelSearchOrder", 1);
+        WheelScrollDirection = mainConfig.getOrCreateIntProperty("WheelScrollDirection", 0);
         ScrollItemScaling = mainConfig.getOrCreateIntProperty("ScrollItemScaling", 0);
 
         boolean savedConfig = saveConfigFile();
@@ -66,6 +69,7 @@ public class Main extends DeobfuscationLayer {
         mainConfig.setIntProperty("LMBTweakWithoutItem", LMBTweakWithoutItem);
         mainConfig.setIntProperty("WheelTweak", WheelTweak);
         mainConfig.setIntProperty("WheelSearchOrder", WheelSearchOrder);
+        mainConfig.setIntProperty("WheelScrollDirection", WheelScrollDirection);
         mainConfig.setIntProperty("ScrollItemScaling", ScrollItemScaling);
 
         return mainConfig.saveConfig();
@@ -272,6 +276,15 @@ public class Main extends DeobfuscationLayer {
                     do {
                         Slot applicableSlot = null;
 
+                        boolean pushItems = (wheel < 0);
+                        if ((WheelScrollDirection == 2 || WheelScrollDirection == 3)
+                                && otherInventoryIsAbove(selectedSlot, getSlots(asContainer(container)))) {
+                            pushItems = !pushItems;
+                        }
+                        if (WheelScrollDirection == 1 || WheelScrollDirection == 3) {
+                            pushItems = !pushItems;
+                        }
+
                         int slotCounter = 0;
                         int countUntil = slotCount - Constants.INVENTORY_SIZE;
                         if (getSlotNumber(selectedSlot) < countUntil) {
@@ -279,22 +292,22 @@ public class Main extends DeobfuscationLayer {
                             countUntil = slotCount;
                         }
 
-                        if ((wheel < 0) || (Main.WheelSearchOrder == 0)) {
+                        if (pushItems || (Main.WheelSearchOrder == 0)) {
                             for (int i = slotCounter; i < countUntil; i++) {
                                 Slot sl = getSlotWithID(currentScreen, i);
                                 ItemStack stackSl = getSlotStack(sl);
 
                                 if (stackSl == null) {
-                                    if ((applicableSlot == null) && (wheel < 0)
+                                    if ((applicableSlot == null) && pushItems
                                             && sl.isItemValid(originalStack)
                                             && !isCraftingOutputSlot(currentScreen, sl)) {
                                         applicableSlot = sl;
                                     }
                                 } else if (areStacksCompatible(originalStack, stackSl)) {
-                                    if ((wheel < 0) && (stackSl.stackSize < stackSl.getMaxStackSize())) {
+                                    if (pushItems && (stackSl.stackSize < stackSl.getMaxStackSize())) {
                                         applicableSlot = sl;
                                         break;
-                                    } else if (wheel > 0) {
+                                    } else if (pushItems) {
                                         applicableSlot = sl;
                                         break;
                                     }
@@ -306,14 +319,14 @@ public class Main extends DeobfuscationLayer {
                                 ItemStack stackSl = getSlotStack(sl);
 
                                 if (stackSl == null) {
-                                    if ((applicableSlot == null) && (wheel < 0) && sl.isItemValid(originalStack)) {
+                                    if ((applicableSlot == null) && pushItems && sl.isItemValid(originalStack)) {
                                         applicableSlot = sl;
                                     }
                                 } else if (areStacksCompatible(originalStack, stackSl)) {
-                                    if ((wheel < 0) && (stackSl.stackSize < stackSl.getMaxStackSize())) {
+                                    if (pushItems && (stackSl.stackSize < stackSl.getMaxStackSize())) {
                                         applicableSlot = sl;
                                         break;
-                                    } else if (wheel > 0) {
+                                    } else if (!pushItems) {
                                         applicableSlot = sl;
                                         break;
                                     }
@@ -322,7 +335,7 @@ public class Main extends DeobfuscationLayer {
                         }
 
                         if (isCraftingOutput) {
-                            if (wheel < 0) {
+                            if (pushItems) {
                                 boolean mouseWasEmpty = stackOnMouse == null;
 
                                 for (int i = 0; i < numItemsToMove; i++) {
@@ -338,13 +351,13 @@ public class Main extends DeobfuscationLayer {
                         }
 
                         if (applicableSlot != null) {
-                            Slot slotTo = (wheel < 0) ? applicableSlot : selectedSlot;
-                            Slot slotFrom = (wheel < 0) ? selectedSlot : applicableSlot;
+                            Slot slotTo = pushItems ? applicableSlot : selectedSlot;
+                            Slot slotFrom = pushItems ? selectedSlot : applicableSlot;
                             ItemStack stackTo = (getSlotStack(slotTo) != null) ? copyItemStack(getSlotStack(slotTo))
                                     : null;
                             ItemStack stackFrom = copyItemStack(getSlotStack(slotFrom));
 
-                            if (wheel < 0) {
+                            if (pushItems) {
                                 numItemsToMove = Math.min(numItemsToMove, getItemStackSize(stackFrom));
 
                                 if ((stackTo != null) && ((getMaxItemStackSize(stackTo) - getItemStackSize(stackTo))
@@ -404,6 +417,26 @@ public class Main extends DeobfuscationLayer {
         }
 
         oldStackOnMouse = stackOnMouse;
+    }
+
+    // Returns true if the other inventory is above the selected slot inventory.
+    //
+    // This is used for the inventory position aware scroll direction. To prevent any surprises, this should have the
+    // same logic for what constitutes the "other" inventory as elsewhere.
+    private static boolean otherInventoryIsAbove(Slot selectedSlot, List<Slot> slots) {
+        boolean selectedIsInPlayerInventory = (getSlotInventory(selectedSlot) == getInventoryPlayer());
+
+        // Count the number of "other inventory" slots below and above the selected slot.
+        int otherInventorySlotsBelow = 0, otherInventorySlotsAbove = 0;
+        for (Slot slot : slots) {
+            if ((getSlotInventory(slot) == getInventoryPlayer()) != selectedIsInPlayerInventory) {
+                if (getSlotYPosition(slot) < getSlotYPosition(selectedSlot)) otherInventorySlotsAbove++;
+                else otherInventorySlotsBelow++;
+            }
+        }
+
+        // If there are more "other inventory" slots above the selected slot, consider the other inventory above.
+        return (otherInventorySlotsAbove > otherInventorySlotsBelow);
     }
 
     public static int getGuiContainerID(GuiScreen currentScreen) {
