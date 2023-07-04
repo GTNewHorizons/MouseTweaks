@@ -307,7 +307,7 @@ public class Main extends DeobfuscationLayer {
                                     if (pushItems && (stackSl.stackSize < stackSl.getMaxStackSize())) {
                                         applicableSlot = sl;
                                         break;
-                                    } else if (pushItems) {
+                                    } else if (!pushItems) {
                                         applicableSlot = sl;
                                         break;
                                     }
