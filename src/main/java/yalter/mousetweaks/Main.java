@@ -256,7 +256,7 @@ public class Main extends DeobfuscationLayer {
 
         if ((wheel != 0) && (selectedSlot != null)) {
             int numItemsToMove;
-            if (ScrollItemScaling == 0) {
+            if (!ModCompatibility.isLwjgl3Loaded() && ScrollItemScaling == 0) {
                 numItemsToMove = Math.abs(wheel) / 120;
             } else {
                 numItemsToMove = 1;

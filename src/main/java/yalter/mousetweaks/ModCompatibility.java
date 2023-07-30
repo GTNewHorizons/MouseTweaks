@@ -3,6 +3,7 @@ package yalter.mousetweaks;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.inventory.Slot;
 
+import cpw.mods.fml.common.Loader;
 import yalter.mousetweaks.api.IMTModGuiContainer;
 
 public class ModCompatibility extends DeobfuscationLayer {
@@ -12,6 +13,7 @@ public class ModCompatibility extends DeobfuscationLayer {
     private static boolean forestryInstalled = false;
     private static boolean codechickencoreInstalled = false;
     private static boolean NEIInstalled = false;
+    private static boolean lwjgl3Loaded = false;
 
     public static void initialize() {
         if (initialized) return;
@@ -31,7 +33,16 @@ public class ModCompatibility extends DeobfuscationLayer {
             Constants.LOGGER.info("Successfully reflected NEI!");
         }
 
+        lwjgl3Loaded = Loader.isModLoaded("lwjgl3ify");
+        if (lwjgl3Loaded) {
+            Constants.LOGGER.info("Detected lwjgl3!");
+        }
+
         initialized = true;
+    }
+
+    public static boolean isLwjgl3Loaded() {
+        return lwjgl3Loaded;
     }
 
     public static int getModGuiContainerID(GuiScreen guiScreen) {
