@@ -1,12 +1,12 @@
 package yalter.mousetweaks.loaders;
 
-import yalter.mousetweaks.Constants;
-import yalter.mousetweaks.Main;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import yalter.mousetweaks.Constants;
+import yalter.mousetweaks.Main;
 
 @Mod(
         modid = Constants.MOD_ID,
