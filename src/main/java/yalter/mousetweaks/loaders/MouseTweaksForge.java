@@ -2,6 +2,7 @@ package yalter.mousetweaks.loaders;
 
 import com.gtnewhorizon.gtnhlib.config.ConfigException;
 import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -27,7 +28,7 @@ public class MouseTweaksForge {
         if (event.getSide().isClient()) {
             try {
                 Config oldConfig = new Config(event.getSuggestedConfigurationFile());
-                if (oldConfig.hasOldConfig()){
+                if (oldConfig.hasOldConfig()) {
                     oldConfig.importOldConfig();
                 }
                 ConfigurationManager.registerConfig(MTConfig.class);
