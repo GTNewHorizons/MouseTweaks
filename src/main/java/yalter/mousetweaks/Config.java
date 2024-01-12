@@ -1,12 +1,12 @@
 package yalter.mousetweaks;
 
-import yalter.mousetweaks.config.MTConfig;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Properties;
+
+import yalter.mousetweaks.config.MTConfig;
 
 public class Config {
 
@@ -27,7 +27,7 @@ public class Config {
         }
     }
 
-    public void importOldConfig(){
+    public void importOldConfig() {
         try {
             FileReader reader = new FileReader(this.file);
             Properties tempProps = new Properties();
@@ -53,7 +53,6 @@ public class Config {
 
             if (tempProps.containsKey("ScrollItemScaling"))
                 MTConfig.ScrollItemScaling = Integer.parseInt(tempProps.get("ScrollItemScaling").toString());
-
 
             file.renameTo(new File(file.getPath() + ".bak"));
         } catch (IOException ignored) {}

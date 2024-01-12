@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+
 import yalter.mousetweaks.config.MTConfig;
 
 public class Main extends DeobfuscationLayer {
