@@ -1,6 +1,5 @@
 package yalter.mousetweaks;
 
-import java.io.File;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -10,20 +9,12 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import yalter.mousetweaks.config.MTConfig;
 
 public class Main extends DeobfuscationLayer {
 
     public static boolean DisableRMBTweak = false;
 
-    public static int RMBTweak = 0;
-    public static int LMBTweakWithItem = 0;
-    public static int LMBTweakWithoutItem = 0;
-    public static int WheelTweak = 0;
-    public static int WheelSearchOrder = 1;
-    public static int WheelScrollDirection = 0;
-    public static int ScrollItemScaling = 0;
-
-    public static Config mainConfig;
     private static GuiScreen oldGuiScreen = null;
     private static Object container = null;
     private static Slot oldSelectedSlot = null;
@@ -35,44 +26,11 @@ public class Main extends DeobfuscationLayer {
     private static boolean disableWheelForThisContainer = false;
     private static int guiContainerID = 0;
 
-    private static boolean readConfig = false;
-
     public static void initialise() {
         mc = Minecraft.getMinecraft();
 
-        mainConfig = new Config(mc.mcDataDir + File.separator + "config" + File.separator + "MouseTweaks.cfg");
-        readConfigFile();
-
         ModCompatibility.initialize();
         Constants.LOGGER.info("Mouse Tweaks has been initialised.");
-    }
-
-    public static void readConfigFile() {
-        boolean loadedConfig = mainConfig.readConfig();
-
-        RMBTweak = mainConfig.getOrCreateIntProperty("RMBTweak", 1);
-        LMBTweakWithItem = mainConfig.getOrCreateIntProperty("LMBTweakWithItem", 1);
-        LMBTweakWithoutItem = mainConfig.getOrCreateIntProperty("LMBTweakWithoutItem", 1);
-        WheelTweak = mainConfig.getOrCreateIntProperty("WheelTweak", 1);
-        WheelSearchOrder = mainConfig.getOrCreateIntProperty("WheelSearchOrder", 1);
-        WheelScrollDirection = mainConfig.getOrCreateIntProperty("WheelScrollDirection", 0);
-        ScrollItemScaling = mainConfig.getOrCreateIntProperty("ScrollItemScaling", 0);
-
-        boolean savedConfig = saveConfigFile();
-
-        if (savedConfig && !loadedConfig) Constants.LOGGER.info("Mouse Tweaks config file was created.");
-    }
-
-    public static boolean saveConfigFile() {
-        mainConfig.setIntProperty("RMBTweak", RMBTweak);
-        mainConfig.setIntProperty("LMBTweakWithItem", LMBTweakWithItem);
-        mainConfig.setIntProperty("LMBTweakWithoutItem", LMBTweakWithoutItem);
-        mainConfig.setIntProperty("WheelTweak", WheelTweak);
-        mainConfig.setIntProperty("WheelSearchOrder", WheelSearchOrder);
-        mainConfig.setIntProperty("WheelScrollDirection", WheelScrollDirection);
-        mainConfig.setIntProperty("ScrollItemScaling", ScrollItemScaling);
-
-        return mainConfig.saveConfig();
     }
 
     public static void onUpdateInGame() {
@@ -88,15 +46,9 @@ public class Main extends DeobfuscationLayer {
             shouldClick = true;
             disableForThisContainer = false;
             disableWheelForThisContainer = false;
-            readConfig = true;
 
             guiContainerID = Constants.NOTASSIGNED;
         } else {
-            if (readConfig) {
-                readConfig = false;
-                readConfigFile();
-            }
-
             if (guiContainerID == Constants.NOTASSIGNED) {
                 guiContainerID = getGuiContainerID(currentScreen);
             }
@@ -133,9 +85,9 @@ public class Main extends DeobfuscationLayer {
 
         if (guiContainerID == Constants.NOTGUICONTAINER) return;
 
-        if ((Main.DisableRMBTweak || (Main.RMBTweak == 0)) && (Main.LMBTweakWithoutItem == 0)
-                && (Main.LMBTweakWithItem == 0)
-                && (Main.WheelTweak == 0))
+        if ((Main.DisableRMBTweak || (!MTConfig.RMBTweak)) && (!MTConfig.LMBTweakWithoutItem)
+                && (!MTConfig.LMBTweakWithItem)
+                && (!MTConfig.WheelTweak))
             return;
 
         if (disableForThisContainer) return;
@@ -147,7 +99,7 @@ public class Main extends DeobfuscationLayer {
         if (slotCount == 0) // If there are no slots, then there is nothing to do.
             return;
 
-        int wheel = ((Main.WheelTweak == 1) && !disableWheelForThisContainer) ? Mouse.getDWheel() : 0;
+        int wheel = ((MTConfig.WheelTweak) && !disableWheelForThisContainer) ? Mouse.getDWheel() : 0;
 
         if (!Mouse.isButtonDown(1)) {
             firstSlotClicked = false;
@@ -202,7 +154,7 @@ public class Main extends DeobfuscationLayer {
             boolean shiftIsDown = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
 
             if (Mouse.isButtonDown(1)) { // Right mouse button
-                if ((Main.RMBTweak == 1) && !Main.DisableRMBTweak) {
+                if ((MTConfig.RMBTweak) && !Main.DisableRMBTweak) {
 
                     if ((stackOnMouse != null) && areStacksCompatible(stackOnMouse, targetStack)
                             && !isCraftingOutputSlot(currentScreen, selectedSlot)) {
@@ -220,7 +172,7 @@ public class Main extends DeobfuscationLayer {
                 }
             } else if (Mouse.isButtonDown(0)) { // Left mouse button
                 if (stackOnMouse != null) {
-                    if (Main.LMBTweakWithItem == 1) {
+                    if (MTConfig.LMBTweakWithItem) {
                         if ((targetStack != null) && areStacksCompatible(stackOnMouse, targetStack)) {
 
                             if (shiftIsDown) { // If shift is down, we just shift-click the slot and the item gets moved
@@ -242,7 +194,7 @@ public class Main extends DeobfuscationLayer {
                             }
                         }
                     }
-                } else if (Main.LMBTweakWithoutItem == 1) {
+                } else if (MTConfig.LMBTweakWithoutItem) {
                     if (targetStack != null) {
                         if (shiftIsDown) {
                             clickSlot(currentScreen, selectedSlot, 0, true);
@@ -256,7 +208,7 @@ public class Main extends DeobfuscationLayer {
 
         if ((wheel != 0) && (selectedSlot != null)) {
             int numItemsToMove;
-            if (!ModCompatibility.isLwjgl3Loaded() && ScrollItemScaling == 0) {
+            if (!ModCompatibility.isLwjgl3Loaded() && MTConfig.ScrollItemScaling == 0) {
                 numItemsToMove = Math.abs(wheel) / 120;
             } else {
                 numItemsToMove = 1;
@@ -277,11 +229,11 @@ public class Main extends DeobfuscationLayer {
                         Slot applicableSlot = null;
 
                         boolean pushItems = (wheel < 0);
-                        if ((WheelScrollDirection == 2 || WheelScrollDirection == 3)
+                        if ((MTConfig.WheelScrollDirection == 2 || MTConfig.WheelScrollDirection == 3)
                                 && otherInventoryIsAbove(selectedSlot, getSlots(asContainer(container)))) {
                             pushItems = !pushItems;
                         }
-                        if (WheelScrollDirection == 1 || WheelScrollDirection == 3) {
+                        if (MTConfig.WheelScrollDirection == 1 || MTConfig.WheelScrollDirection == 3) {
                             pushItems = !pushItems;
                         }
 
@@ -292,7 +244,7 @@ public class Main extends DeobfuscationLayer {
                             countUntil = slotCount;
                         }
 
-                        if (pushItems || (Main.WheelSearchOrder == 0)) {
+                        if (pushItems || (MTConfig.WheelSearchOrder == 0)) {
                             for (int i = slotCounter; i < countUntil; i++) {
                                 Slot sl = getSlotWithID(currentScreen, i);
                                 ItemStack stackSl = getSlotStack(sl);
