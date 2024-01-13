@@ -1,69 +1,60 @@
 package yalter.mousetweaks;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Objects;
 import java.util.Properties;
+
+import yalter.mousetweaks.config.MTConfig;
 
 public class Config {
 
-    private String fileName;
-    private Properties properties = new Properties();
+    private File file;
 
-    public Config(String fileName) {
-        this.fileName = fileName;
+    public Config(File fileName) {
+        this.file = fileName;
     }
 
-    public boolean readConfig() {
-        properties.clear();
-
+    public boolean hasOldConfig() {
         try {
-            FileReader configReader = new FileReader(fileName);
-            properties.load(configReader);
-            configReader.close();
-
-            if (properties.size() == 0) return false;
-
-            return true;
-        } catch (FileNotFoundException ignored) {} catch (IOException e) {
-            Constants.LOGGER.error("Failed to read the config file: " + fileName, e);
-        }
-
-        return false;
-    }
-
-    public boolean saveConfig() {
-        try {
-            File config = new File(fileName);
-            File parentDir = config.getParentFile();
-            if (!parentDir.exists()) parentDir.mkdirs();
-
-            FileWriter configWriter = new FileWriter(config);
-            properties.store(configWriter, null);
-            configWriter.close();
-
-            return true;
+            FileReader reader = new FileReader(this.file);
+            Properties tempProps = new Properties();
+            tempProps.load(reader);
+            return tempProps.size() > 0 && !tempProps.containsKey("general");
         } catch (IOException e) {
-            Constants.LOGGER.error("Failed to write the config file: " + fileName, e);
+            return false;
         }
-
-        return false;
     }
 
-    public String getOrCreateProperty(String name, String defaultValue) {
-        if (properties.containsKey(name)) return properties.getProperty(name);
-        else properties.setProperty(name, defaultValue);
+    public void importOldConfig() {
+        try {
+            FileReader reader = new FileReader(this.file);
+            Properties tempProps = new Properties();
+            tempProps.load(reader);
 
-        return defaultValue;
-    }
+            if (tempProps.containsKey("RMBTweak"))
+                MTConfig.RMBTweak = Objects.equals(tempProps.get("RMBTweak").toString(), "1");
 
-    public int getOrCreateIntProperty(String name, int defaultValue) {
-        return Integer.parseInt(getOrCreateProperty(name, String.valueOf(defaultValue)));
-    }
+            if (tempProps.containsKey("LMBTweakWithItem"))
+                MTConfig.LMBTweakWithItem = Objects.equals(tempProps.get("LMBTweakWithItem").toString(), "1");
 
-    public void setProperty(String name, String value) {
-        properties.setProperty(name, value);
-    }
+            if (tempProps.containsKey("LMBTweakWithoutItem"))
+                MTConfig.LMBTweakWithoutItem = Objects.equals(tempProps.get("LMBTweakWithoutItem").toString(), "1");
 
-    public void setIntProperty(String name, int value) {
-        setProperty(name, String.valueOf(value));
+            if (tempProps.containsKey("WheelTweak"))
+                MTConfig.WheelTweak = Objects.equals(tempProps.get("WheelTweak").toString(), "1");
+
+            if (tempProps.containsKey("WheelSearchOrder"))
+                MTConfig.WheelSearchOrder = Integer.parseInt(tempProps.get("WheelSearchOrder").toString());
+
+            if (tempProps.containsKey("WheelScrollDirection"))
+                MTConfig.WheelScrollDirection = Integer.parseInt(tempProps.get("WheelScrollDirection").toString());
+
+            if (tempProps.containsKey("ScrollItemScaling"))
+                MTConfig.ScrollItemScaling = Integer.parseInt(tempProps.get("ScrollItemScaling").toString());
+
+            file.renameTo(new File(file.getPath() + ".bak"));
+        } catch (IOException ignored) {}
     }
 }
