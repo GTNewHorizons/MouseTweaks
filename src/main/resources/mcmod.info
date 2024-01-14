@@ -12,10 +12,6 @@
 		"credits": "Various open-source mods from where I learned.",
 		"logoFile": "mousetweaks_logo.png",
 		"screenshots": [],
-		"parent": "",
-		"requiredMods": [],
-		"dependencies": [],
-		"dependants": [],
-		"useDependencyInformation": true
+		"parent": ""
 	}]
 }
