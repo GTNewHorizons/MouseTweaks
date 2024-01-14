@@ -18,16 +18,22 @@ public class Config {
     }
 
     public boolean hasOldConfig() {
+        Constants.LOGGER.info("checking if old config");
         if (!this.file.exists()) return false;
 
         try {
-            return Files.readAllLines(this.file.toPath()).stream().noneMatch(str -> str.contains("general"));
+            boolean val = Files.readAllLines(this.file.toPath()).stream().noneMatch(str -> str.contains("general"));
+            Constants.LOGGER.info("output of hasOldConfig: " + (val ? "true" : "false"));
+            return val;
         } catch (IOException e) {
+            Constants.LOGGER.info("Error reading old config");
+            Constants.LOGGER.error(e);
             return true; // assume yes if it failed for whatever reason
         }
     }
 
     public void importOldConfig() {
+        Constants.LOGGER.info("importOldConfig start");
         Properties tempProps = new Properties();
         try {
             FileReader reader = new FileReader(this.file);
@@ -54,10 +60,12 @@ public class Config {
             if (tempProps.containsKey("ScrollItemScaling"))
                 MTConfig.ScrollItemScaling = Integer.parseInt(tempProps.get("ScrollItemScaling").toString());
 
+            Constants.LOGGER.error(tempProps.toString());
             file.renameTo(new File(file.getPath() + ".bak"));
         } catch (IOException e) {
-            Constants.LOGGER.error(e);
+            Constants.LOGGER.info("importOldConfig error");
             Constants.LOGGER.error(tempProps.toString());
+            Constants.LOGGER.error(e);
         }
     }
 }
