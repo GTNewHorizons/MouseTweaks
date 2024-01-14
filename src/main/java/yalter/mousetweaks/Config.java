@@ -21,9 +21,9 @@ public class Config {
             FileReader reader = new FileReader(this.file);
             Properties tempProps = new Properties();
             tempProps.load(reader);
-            return tempProps.size() > 0 && !tempProps.containsKey("general");
+            return !tempProps.containsKey("general");
         } catch (IOException e) {
-            return false;
+            return true; // assume yes if it failed for whatever reason
         }
     }
 
