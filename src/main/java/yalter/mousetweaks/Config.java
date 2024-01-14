@@ -3,6 +3,7 @@ package yalter.mousetweaks;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -17,14 +18,11 @@ public class Config {
     }
 
     public boolean hasOldConfig() {
-        Properties tempProps = new Properties();
+        if (!this.file.exists()) return false;
+
         try {
-            FileReader reader = new FileReader(this.file);
-            tempProps.load(reader);
-            return !tempProps.containsKey("general");
+            return Files.readAllLines(this.file.toPath()).stream().noneMatch(str -> str.contains("general"));
         } catch (IOException e) {
-            Constants.LOGGER.error(e);
-            Constants.LOGGER.error(tempProps.toString());
             return true; // assume yes if it failed for whatever reason
         }
     }
