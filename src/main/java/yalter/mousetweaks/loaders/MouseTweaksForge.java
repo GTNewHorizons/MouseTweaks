@@ -28,10 +28,7 @@ public class MouseTweaksForge {
     public void preinit(FMLPreInitializationEvent event) {
         if (event.getSide().isClient()) {
             try {
-                Config oldConfig = new Config(event.getSuggestedConfigurationFile());
-                if (oldConfig.hasOldConfig()) {
-                    oldConfig.importOldConfig();
-                }
+                Config.handleOldConfig(event.getSuggestedConfigurationFile());
                 ConfigurationManager.registerConfig(MTConfig.class);
                 ConfigurationManager.registerBus();
             } catch (ConfigException e) {
