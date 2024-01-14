@@ -17,20 +17,22 @@ public class Config {
     }
 
     public boolean hasOldConfig() {
+        Properties tempProps = new Properties();
         try {
             FileReader reader = new FileReader(this.file);
-            Properties tempProps = new Properties();
             tempProps.load(reader);
             return !tempProps.containsKey("general");
         } catch (IOException e) {
+            Constants.LOGGER.error(e);
+            Constants.LOGGER.error(tempProps.toString());
             return true; // assume yes if it failed for whatever reason
         }
     }
 
     public void importOldConfig() {
+        Properties tempProps = new Properties();
         try {
             FileReader reader = new FileReader(this.file);
-            Properties tempProps = new Properties();
             tempProps.load(reader);
 
             if (tempProps.containsKey("RMBTweak"))
@@ -55,6 +57,9 @@ public class Config {
                 MTConfig.ScrollItemScaling = Integer.parseInt(tempProps.get("ScrollItemScaling").toString());
 
             file.renameTo(new File(file.getPath() + ".bak"));
-        } catch (IOException ignored) {}
+        } catch (IOException e) {
+            Constants.LOGGER.error(e);
+            Constants.LOGGER.error(tempProps.toString());
+        }
     }
 }
