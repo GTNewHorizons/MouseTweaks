@@ -6,18 +6,12 @@ import java.nio.file.Files;
 
 public class Config {
 
-    private File file;
-
-    public Config(File fileName) {
-        this.file = fileName;
-    }
-
-    public void handleOldConfig() {
-        if (!this.file.exists()) return;
+    public static void handleOldConfig(File file) {
+        if (!file.exists()) return;
 
         try {
-            if (Files.readAllLines(this.file.toPath()).stream().noneMatch(str -> str.contains("general"))) {
-                this.file.delete();
+            if (Files.readAllLines(file.toPath()).stream().noneMatch(str -> str.contains("general"))) {
+                file.delete();
             }
         } catch (IOException e) {
             Constants.LOGGER.error(e);
