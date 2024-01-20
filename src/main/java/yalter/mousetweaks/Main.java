@@ -83,8 +83,8 @@ public class Main extends DeobfuscationLayer {
 
             disableWheelForThisContainer = isWheelDisabledForThisContainer(currentScreen);
 
-            if (((MTConfig.WheelTweak) && !disableWheelForThisContainer))
-                Mouse.getDWheel(); // reset the mouse wheel delta
+            if (((MTConfig.WheelTweak) && !disableWheelForThisContainer)) Mouse.getDWheel(); // reset the mouse wheel
+                                                                                             // delta
         }
 
         if (guiContainerID == Constants.NOTGUICONTAINER) return;
