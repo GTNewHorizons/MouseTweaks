@@ -132,7 +132,8 @@ public class DeobfuscationLayer {
     }
 
     protected static boolean areStacksCompatible(ItemStack itemStack1, ItemStack itemStack2) {
-        return ((itemStack1 == null) || (itemStack2 == null)) || itemStack1.isItemEqual(itemStack2);
+        return ((itemStack1 == null) || (itemStack2 == null))
+                || (itemStack1.isItemEqual(itemStack2) && ItemStack.areItemStackTagsEqual(itemStack1, itemStack2));
     }
 
     protected static Slot getSelectedSlot(GuiContainer guiContainer, Container container, int slotCount) {
