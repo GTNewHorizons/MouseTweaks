@@ -30,7 +30,6 @@ public class MouseTweaksForge {
             try {
                 Config.handleOldConfig(event.getSuggestedConfigurationFile());
                 ConfigurationManager.registerConfig(MTConfig.class);
-                ConfigurationManager.registerBus();
             } catch (ConfigException e) {
                 throw new RuntimeException(e);
             }
