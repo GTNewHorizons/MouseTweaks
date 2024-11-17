@@ -30,7 +30,7 @@ public class DeobfuscationLayer {
     }
 
     protected static boolean isGuiContainer(GuiScreen guiScreen) {
-        return (guiScreen != null) && (guiScreen instanceof GuiContainer);
+        return guiScreen instanceof GuiContainer;
     }
 
     protected static boolean isValidGuiContainer(GuiScreen guiScreen) {

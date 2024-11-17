@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+import cpw.mods.fml.common.Loader;
 import yalter.mousetweaks.config.MTConfig;
 
 public class Main extends DeobfuscationLayer {
@@ -47,13 +48,11 @@ public class Main extends DeobfuscationLayer {
             shouldClick = true;
             disableForThisContainer = false;
             disableWheelForThisContainer = false;
-
             guiContainerID = Constants.NOTASSIGNED;
         } else {
             if (guiContainerID == Constants.NOTASSIGNED) {
                 guiContainerID = getGuiContainerID(currentScreen);
             }
-
             onUpdateInGui(currentScreen);
         }
     }
@@ -83,27 +82,32 @@ public class Main extends DeobfuscationLayer {
 
             disableWheelForThisContainer = isWheelDisabledForThisContainer(currentScreen);
 
-            if (((MTConfig.WheelTweak) && !disableWheelForThisContainer)) Mouse.getDWheel(); // reset the mouse wheel
-                                                                                             // delta
+            if (isMouseWheelTransferActive() && !disableWheelForThisContainer) {
+                Mouse.getDWheel(); // reset the mouse wheel delta
+            }
         }
 
         if (guiContainerID == Constants.NOTGUICONTAINER) return;
 
-        if ((Main.DisableRMBTweak || (!MTConfig.RMBTweak)) && (!MTConfig.LMBTweakWithoutItem)
-                && (!MTConfig.LMBTweakWithItem)
-                && (!MTConfig.WheelTweak))
+        if ((Main.DisableRMBTweak || (!MTConfig.RMBTweak)) && !MTConfig.LMBTweakWithoutItem
+                && !MTConfig.LMBTweakWithItem
+                && !isMouseWheelTransferActive()) {
             return;
+        }
 
         if (disableForThisContainer) return;
 
-        int slotCount = getSlotCountWithID(currentScreen); // It's better to have this here, because there are some
-                                                           // inventories that change slot
-        // count during
-        // runtime (for example NEI's crafting recipe GUI).
-        if (slotCount == 0) // If there are no slots, then there is nothing to do.
-            return;
+        // It's better to have this here, because there
+        // are some inventories that change slot
+        // count during runtime (for example NEI's crafting recipe GUI).
+        int slotCount = getSlotCountWithID(currentScreen);
 
-        int wheel = ((MTConfig.WheelTweak) && !disableWheelForThisContainer) ? Mouse.getDWheel() : 0;
+        if (slotCount == 0) {
+            // If there are no slots, then there is nothing to do.
+            return;
+        }
+
+        int wheel = isMouseWheelTransferActive() && !disableWheelForThisContainer ? Mouse.getDWheel() : 0;
 
         if (!Mouse.isButtonDown(1)) {
             firstSlotClicked = false;
@@ -150,9 +154,8 @@ public class Main extends DeobfuscationLayer {
             }
 
             if (Constants.DEV_ENV) {
-                Constants.LOGGER.debug(
-                        new StringBuilder().append("You have selected a new slot, it's slot number is ")
-                                .append(getSlotNumber(selectedSlot)).toString());
+                Constants.LOGGER
+                        .debug("You have selected a new slot, it's slot number is " + getSlotNumber(selectedSlot));
             }
 
             boolean shiftIsDown = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
@@ -375,6 +378,15 @@ public class Main extends DeobfuscationLayer {
         oldStackOnMouse = stackOnMouse;
     }
 
+    private static final boolean isNEIPresent = Loader.isModLoaded("NotEnoughItems");
+
+    private static boolean isMouseWheelTransferActive() {
+        if (isNEIPresent) {
+            return MTConfig.WheelTweak && !codechicken.nei.NEIClientConfig.isMouseScrollTransferEnabled();
+        }
+        return MTConfig.WheelTweak;
+    }
+
     // Returns true if the other inventory is above the selected slot inventory.
     //
     // This is used for the inventory position aware scroll direction. To prevent any surprises, this should have the
@@ -396,9 +408,8 @@ public class Main extends DeobfuscationLayer {
     }
 
     public static int getGuiContainerID(GuiScreen currentScreen) {
-        int containerID = ModCompatibility.getModGuiContainerID(currentScreen); // This first because a lot of mod
-                                                                                // containers extend the vanilla
-                                                                                // Minecraft one.
+        // This first because a lot of mod extend the vanilla Minecraft one.
+        int containerID = ModCompatibility.getModGuiContainerID(currentScreen);
         if (containerID == Constants.NOTGUICONTAINER)
             return (isGuiContainer(currentScreen) && isValidGuiContainer(currentScreen)) ? Constants.MINECRAFT
                     : Constants.NOTGUICONTAINER;
