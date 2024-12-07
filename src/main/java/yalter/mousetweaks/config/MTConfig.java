@@ -8,7 +8,7 @@ import yalter.mousetweaks.Constants;
 public class MTConfig {
 
     @Config.Comment("Very similar to the standard RMB dragging mechanic, with one difference: if you drag over a slot multiple times, an item will be put there multiple times. Replaces the standard mechanic if enabled.")
-    public static boolean RMBTweak = false;
+    public static boolean RMBTweak = true;
 
     @Config.Comment("Lets you quickly pick up or move items of the same type")
     public static boolean LMBTweakWithItem = true;
