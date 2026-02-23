@@ -19,7 +19,7 @@ import yalter.mousetweaks.config.MTConfig;
         name = Constants.MOD_NAME,
         version = Constants.MOD_VERSION,
         guiFactory = "yalter.mousetweaks.config.MTGuiConfigFactory",
-        dependencies = "required-after:gtnhlib@[0.2.0,);",
+        dependencies = "required-after:gtnhlib@[0.9.27,);",
         acceptedMinecraftVersions = "[1.7.10]",
         acceptableRemoteVersions = "*")
 public class MouseTweaksForge {
