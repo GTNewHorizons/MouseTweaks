@@ -94,7 +94,7 @@ public class Reflection {
     }
 
     public static boolean is(Object object, String name) {
-        return object.getClass().getSimpleName() == name;
+        return (object != null) && (name != null) && name.equals(object.getClass().getSimpleName());
     }
 
     public static boolean doesClassExist(String name) {
@@ -105,9 +105,7 @@ public class Reflection {
     public static Class<?> getClass(String name) {
         try {
             return Class.forName(name);
-        } catch (ClassNotFoundException e) {
-            ;
-        }
+        } catch (ClassNotFoundException ignored) {}
 
         return null;
     }
@@ -179,10 +177,10 @@ public class Reflection {
             }
 
             if (method == null) {
-                if ((args != null) & (args.length != 0)) {
+                if ((args != null) && (args.length != 0)) {
                     method = clazz.getDeclaredMethod(name, args);
                 } else {
-                    method = clazz.getDeclaredMethod(name, new Class[0]);
+                    method = clazz.getDeclaredMethod(name, new Class<?>[0]);
                 }
             }
 
