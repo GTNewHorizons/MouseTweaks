@@ -1,4 +1,4 @@
 dependencies {
-    api("com.github.GTNewHorizons:GTNHLib:0.9.27:dev")
-    implementation('com.github.GTNewHorizons:NotEnoughItems:2.8.70-GTNH:dev')
+    api("com.github.GTNewHorizons:GTNHLib:0.9.53:dev")
+    implementation('com.github.GTNewHorizons:NotEnoughItems:2.8.93-GTNH:dev')
 }
