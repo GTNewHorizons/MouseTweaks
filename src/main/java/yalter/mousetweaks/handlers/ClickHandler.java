@@ -121,13 +121,14 @@ public class ClickHandler extends DeobfuscationLayer {
                     if (!isCraftingOutput) {
                         context.clickSlot(currentScreen, selectedSlot, 0, true);
                     }
-                } else if ((getItemStackSize(stackOnMouse) + getItemStackSize(targetStack))
-                        <= getMaxItemStackSize(stackOnMouse)) {
-                            context.clickSlot(currentScreen, selectedSlot, 0, false);
-                            if (!isCraftingOutput) {
-                                context.clickSlot(currentScreen, selectedSlot, 0, false);
-                            }
-                        }
+                } else if (asGuiContainer(currentScreen).field_147007_t == false // dragSplitting
+                        && (getItemStackSize(stackOnMouse) + getItemStackSize(targetStack))
+                                <= getMaxItemStackSize(stackOnMouse)) {
+                                    context.clickSlot(currentScreen, selectedSlot, 0, false);
+                                    if (!isCraftingOutput) {
+                                        context.clickSlot(currentScreen, selectedSlot, 0, false);
+                                    }
+                                }
             }
         } else if (MTConfig.LMBTweakWithoutItem && (targetStack != null) && shiftIsDown) {
             context.clickSlot(currentScreen, selectedSlot, 0, true);
