@@ -7,7 +7,6 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -34,8 +33,7 @@ public class DeobfuscationLayer {
     }
 
     protected static boolean isValidGuiContainer(GuiScreen guiScreen) {
-        return (guiScreen != null) && !(guiScreen.getClass().getSimpleName().contains("CJB_GuiCrafting"))
-                && !(guiScreen.getClass().equals(GuiContainerCreative.class));
+        return (guiScreen != null) && !(guiScreen.getClass().getSimpleName().contains("CJB_GuiCrafting"));
     }
 
     protected static boolean isVanillaCraftingOutputSlot(Container container, Slot slot) {
