@@ -31,7 +31,7 @@ public class Runtime extends DeobfuscationLayer {
         GuiScreen currentScreen = getCurrentScreen();
         if (currentScreen == null) {
             context.reset();
-            clickHandler.reset();
+            clickHandler.updateScreen(null);
             return;
         }
 
@@ -39,6 +39,7 @@ public class Runtime extends DeobfuscationLayer {
     }
 
     public static void onUpdateInGui(GuiScreen currentScreen) {
+        clickHandler.updateScreen(currentScreen);
         boolean wheelTransferActive = isMouseWheelTransferActive();
 
         if (!context.refresh(currentScreen, wheelTransferActive)) return;
