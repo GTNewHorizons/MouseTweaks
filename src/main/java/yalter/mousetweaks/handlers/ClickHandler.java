@@ -14,13 +14,18 @@ import yalter.mousetweaks.config.MTConfig;
 
 public class ClickHandler extends DeobfuscationLayer {
 
+    private GuiScreen currentScreen = null;
+    private boolean waitingForButtonRelease = false;
     private Slot oldSelectedSlot = null;
     private Slot firstSlot = null;
     private ItemStack oldStackOnMouse = null;
     private boolean firstSlotClicked = false;
     private boolean shouldClick = true;
 
-    public void reset() {
+    public void updateScreen(GuiScreen screen) {
+        if (currentScreen == screen) return;
+        currentScreen = screen;
+        waitingForButtonRelease = true;
         oldSelectedSlot = null;
         firstSlot = null;
         oldStackOnMouse = null;
@@ -46,6 +51,12 @@ public class ClickHandler extends DeobfuscationLayer {
 
     public boolean handleSlotChangeAndButtons(GuiScreen currentScreen, Slot selectedSlot, ItemStack stackOnMouse,
             ItemStack targetStack, ContainerContext context) {
+        // A held button from another screen must not start a drag in this inventory.
+        if (waitingForButtonRelease) {
+            waitingForButtonRelease = Mouse.isButtonDown(0) || Mouse.isButtonDown(1);
+            oldSelectedSlot = selectedSlot;
+            return true;
+        }
         if (oldSelectedSlot == selectedSlot) return true;
 
         if (Mouse.isButtonDown(1) && !firstSlotClicked && (firstSlot == null) && (oldSelectedSlot != null)) {
