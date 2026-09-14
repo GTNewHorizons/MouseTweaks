@@ -97,6 +97,10 @@ public class ContainerContext extends DeobfuscationLayer {
         }
     }
 
+    int getWindowId() {
+        return getWindowId(asContainer(container));
+    }
+
     public boolean isCraftingOutputSlot(GuiScreen currentScreen, Slot targetSlot) {
         if (guiContainerID == Constants.MINECRAFT) {
             return isVanillaCraftingOutputSlot(asContainer(container), targetSlot);

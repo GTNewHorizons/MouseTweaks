@@ -1,6 +1,7 @@
 package yalter.mousetweaks.handlers;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -89,10 +90,16 @@ public class ClickHandler extends DeobfuscationLayer {
 
         boolean shiftIsDown = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
 
-        if (Mouse.isButtonDown(1)) { // Right mouse button
-            handleRMBTweak(currentScreen, selectedSlot, stackOnMouse, targetStack, context);
-        } else if (Mouse.isButtonDown(0)) { // Left mouse button
-            handleLMBTweak(currentScreen, selectedSlot, stackOnMouse, targetStack, shiftIsDown, context);
+        if (currentScreen instanceof GuiContainerCreative) {
+            ClickCreativeHandler.handler(currentScreen, context, selectedSlot, stackOnMouse, shiftIsDown, targetStack);
+            oldSelectedSlot = selectedSlot;
+            return false;
+        } else {
+            if (Mouse.isButtonDown(1)) { // Right mouse button
+                handleRMBTweak(currentScreen, selectedSlot, stackOnMouse, targetStack, context);
+            } else if (Mouse.isButtonDown(0)) { // Left mouse button
+                handleLMBTweak(currentScreen, selectedSlot, stackOnMouse, targetStack, shiftIsDown, context);
+            }
         }
 
         oldSelectedSlot = selectedSlot;
