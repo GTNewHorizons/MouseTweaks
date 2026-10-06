@@ -34,8 +34,11 @@ public class DeobfuscationLayer {
     }
 
     protected static boolean isValidGuiContainer(GuiScreen guiScreen) {
-        return (guiScreen != null) && !(guiScreen.getClass().getSimpleName().contains("CJB_GuiCrafting"))
-                && !(guiScreen.getClass().equals(GuiContainerCreative.class));
+        return (guiScreen != null) && !(guiScreen.getClass().getSimpleName().contains("CJB_GuiCrafting"));
+    }
+
+    protected static boolean isCreativeGuiContainer(GuiScreen guiScreen) {
+        return guiScreen instanceof GuiContainerCreative;
     }
 
     protected static boolean isVanillaCraftingOutputSlot(Container container, Slot slot) {
@@ -81,6 +84,10 @@ public class DeobfuscationLayer {
         // if (slotNumber != -1) {
         getPlayerController().windowClick(windowId, slotNumber, mouseButton, shiftPressed, getThePlayer());
         // }
+    }
+
+    protected static void guiHandleMouseClick(GuiContainer guiContainer, Slot slot, int mouseButton, int shiftPressed) {
+        guiContainer.handleMouseClick(slot, getSlotNumber(slot), mouseButton, shiftPressed);
     }
 
     protected static EntityClientPlayerMP getThePlayer() {
