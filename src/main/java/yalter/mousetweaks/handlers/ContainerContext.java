@@ -17,6 +17,7 @@ public class ContainerContext extends DeobfuscationLayer {
     private Object container = null;
     private boolean disableForThisContainer = false;
     private boolean disableWheelForThisContainer = false;
+    private boolean isCreativeContainer = false;
     private int guiContainerID = Constants.NOTASSIGNED;
 
     public void reset() {
@@ -24,6 +25,7 @@ public class ContainerContext extends DeobfuscationLayer {
         container = null;
         disableForThisContainer = false;
         disableWheelForThisContainer = false;
+        isCreativeContainer = false;
         guiContainerID = Constants.NOTASSIGNED;
     }
 
@@ -34,6 +36,8 @@ public class ContainerContext extends DeobfuscationLayer {
         // If we opened an inventory from another inventory (for example, NEI's options menu).
         guiContainerID = resolveGuiContainerID(currentScreen);
         if (guiContainerID == Constants.NOTGUICONTAINER) return false;
+
+        isCreativeContainer = (guiContainerID == Constants.MINECRAFT) && isCreativeGuiContainer(currentScreen);
 
         container = getContainerWithID(currentScreen);
         disableForThisContainer = isDisabledForThisContainer(currentScreen);
@@ -74,7 +78,13 @@ public class ContainerContext extends DeobfuscationLayer {
 
     public Slot getSelectedSlot(GuiScreen currentScreen, int slotCount) {
         if (guiContainerID == Constants.MINECRAFT) {
-            return getSelectedSlot(asGuiContainer(currentScreen), asContainer(container), slotCount);
+            Slot selectedSlot = getSelectedSlot(asGuiContainer(currentScreen), asContainer(container), slotCount);
+
+            if (isCreativeContainer && (selectedSlot != null)
+                    && (getSlotInventory(selectedSlot) != getInventoryPlayer())) {
+                return null;
+            }
+            return selectedSlot;
         }
         return ModCompatibility.getModSelectedSlot(guiContainerID, currentScreen, container, slotCount);
     }
@@ -85,7 +95,9 @@ public class ContainerContext extends DeobfuscationLayer {
     }
 
     public void clickSlot(GuiScreen currentScreen, Slot targetSlot, int mouseButton, boolean shiftPressed) {
-        if (guiContainerID == Constants.MINECRAFT) {
+        if (isCreativeContainer) {
+            guiHandleMouseClick(asGuiContainer(currentScreen), targetSlot, mouseButton, shiftPressed ? 1 : 0);
+        } else if (guiContainerID == Constants.MINECRAFT) {
             windowClick(
                     getWindowId(asContainer(container)),
                     getSlotNumber(targetSlot),
@@ -154,6 +166,7 @@ public class ContainerContext extends DeobfuscationLayer {
     }
 
     private boolean isWheelDisabledForThisContainer(GuiScreen currentScreen) {
+        if (isCreativeContainer) return true;
         if (guiContainerID == Constants.MINECRAFT) return false;
         return ModCompatibility.isWheelDisabledForThisModContainer(guiContainerID, currentScreen);
     }
