@@ -13,10 +13,16 @@ public class ModCompatibility extends DeobfuscationLayer {
     private static boolean forestryInstalled = false;
     private static boolean codechickencoreInstalled = false;
     private static boolean NEIInstalled = false;
+    private static boolean neiLoaded = false;
     private static boolean lwjgl3Loaded = false;
+    private static boolean modularUI2Loaded = false;
 
     public static void initialize() {
         if (initialized) return;
+
+        neiLoaded = Loader.isModLoaded("NotEnoughItems");
+        lwjgl3Loaded = Loader.isModLoaded("lwjgl3ify");
+        modularUI2Loaded = Loader.isModLoaded("modularui2");
 
         forestryInstalled = Reflection.reflectForestry();
         if (forestryInstalled) {
@@ -33,7 +39,6 @@ public class ModCompatibility extends DeobfuscationLayer {
             Constants.LOGGER.info("Successfully reflected NEI!");
         }
 
-        lwjgl3Loaded = Loader.isModLoaded("lwjgl3ify");
         if (lwjgl3Loaded) {
             Constants.LOGGER.info("Detected lwjgl3!");
         }
@@ -43,6 +48,14 @@ public class ModCompatibility extends DeobfuscationLayer {
 
     public static boolean isLwjgl3Loaded() {
         return lwjgl3Loaded;
+    }
+
+    public static boolean isNEILoaded() {
+        return neiLoaded;
+    }
+
+    public static boolean isModularUI2Loaded() {
+        return modularUI2Loaded;
     }
 
     public static int getModGuiContainerID(GuiScreen guiScreen) {

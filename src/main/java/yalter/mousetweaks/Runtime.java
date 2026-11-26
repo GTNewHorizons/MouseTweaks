@@ -7,7 +7,6 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Mouse;
 
-import cpw.mods.fml.common.Loader;
 import yalter.mousetweaks.config.MTConfig;
 import yalter.mousetweaks.handlers.ClickHandler;
 import yalter.mousetweaks.handlers.ContainerContext;
@@ -17,8 +16,6 @@ public class Runtime extends DeobfuscationLayer {
 
     private static final ContainerContext context = new ContainerContext();
     private static final ClickHandler clickHandler = new ClickHandler();
-
-    private static final boolean isNEIPresent = Loader.isModLoaded("NotEnoughItems");
 
     public static void initialise() {
         mc = Minecraft.getMinecraft();
@@ -83,7 +80,7 @@ public class Runtime extends DeobfuscationLayer {
     }
 
     private static boolean isMouseWheelTransferActive() {
-        if (isNEIPresent) {
+        if (ModCompatibility.isNEILoaded()) {
             return MTConfig.WheelTweak && !codechicken.nei.NEIClientConfig.isMouseScrollTransferEnabled();
         }
         return MTConfig.WheelTweak;
