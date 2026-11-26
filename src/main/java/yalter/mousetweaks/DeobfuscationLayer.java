@@ -21,6 +21,8 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Mouse;
 
+import yalter.mousetweaks.compat.ModularUICompat;
+
 public class DeobfuscationLayer {
 
     protected static Minecraft mc;
@@ -144,6 +146,10 @@ public class DeobfuscationLayer {
     }
 
     protected static Slot getSelectedSlot(GuiContainer guiContainer, Container container, int slotCount) {
+        if (ModCompatibility.isModularUI2Loaded() && ModularUICompat.isModularContainer(container)) {
+            return ModularUICompat.getSelectedSlot(container);
+        }
+
         for (int i = 0; i < slotCount; i++) {
             Slot slot = getSlot(container, i);
             if (guiContainer.isMouseOverSlot(slot, getRequiredMouseX(), getRequiredMouseY())) return slot;
